@@ -1,0 +1,3 @@
+[submodule "src/topos/proto"]
+	path = src/topos/proto
+	url = ssh://git@git.xnetworks.cn:4001/SPTN-IDL/proto.git

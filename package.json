@@ -1,0 +1,39 @@
+{
+  "name": "tests",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --runInBand",
+    "lint": "tslint -p tsconfig.json",
+    "lint-fix": "tslint --fix -p tsconfig.json",
+    "build": "tsc -p tsconfig.json"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@xtp/grpc": "http://140.143.122.65/npm/xtp/grpc-66768a558f702a01092e1bbbd75587fb76a3154a.tar.gz",
+    "@xtp/packet-craft": "http://140.143.122.65/npm/xtp/packet-craft-578a0096c1413252632c24bab45a10b296a4c895.tar.gz",
+    "@xtp/telnet": "http://140.143.122.65/npm/xtp/telnet-eca90d3a5e7ef4a1829dec71af4cc5b76aec2a48.tar.gz",
+    "@xtp/topo-manager": "http://140.143.122.65/npm/xtp/topo-manager-1c56fad4cb877266679e04f23e48f0464b9a67d8.tar.gz",
+    "@xtp/xpath-manager": "http://140.143.122.65/npm/xtp/xpath-manager-4219873a302d493a3a187cae9792f0f637f2f64e.tar.gz",
+    "axios": "^0.19.0",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.18",
+    "husky": "^3.0.4",
+    "jest": "^24.9.0",
+    "jest-html-reporter": "^2.5.0",
+    "prettier": "^1.18.2",
+    "prettier-tslint": "^0.4.2",
+    "ts-jest": "^24.0.2",
+    "ts-node": "^8.3.0",
+    "tslint": "^5.19.0",
+    "tslint-plugin-prettier": "^2.0.1",
+    "typescript": "^3.5.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn run lint"
+    }
+  }
+}
