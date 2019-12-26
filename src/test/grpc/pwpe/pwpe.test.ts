@@ -27,9 +27,9 @@ import { PwpeUtil } from "./PwpeUtil";
 @Describe("test pwpe")
 class TestPwpe {
   /*
-  * @InjectTopo 注解用于给该测试类注入拓扑
-  * 初始化该类时注入虚拟拓扑
-  * */
+   * @InjectTopo 注解用于给该测试类注入拓扑
+   * 初始化该类时注入虚拟拓扑
+   * */
   @InjectTopo
   private readonly topo: DoubleDevice;
 
