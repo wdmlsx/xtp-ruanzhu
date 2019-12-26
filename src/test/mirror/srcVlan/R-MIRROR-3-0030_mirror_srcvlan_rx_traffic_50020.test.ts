@@ -45,6 +45,11 @@ class TestMirrorSrcVlan {
   @InjectTopo
   private readonly topo: DoubleDevice;
 
+  /*
+   * 从拓扑中获取设备并进行链接
+   * 每个测试例被执行前都将执行该方法，链接设备
+   * @BeforeEach　注解会在每一个　@Test注解的测试方法执行前运行
+   * */
   @BeforeEach
   private async beforeEach() {
     jest.setTimeout(30000);
@@ -52,6 +57,11 @@ class TestMirrorSrcVlan {
     await this.topo.dut1.cli.connect();
   }
 
+  /*
+   * 每个测试用例跑完都断开设备连接
+   * 因为每台设备允许的telnet最多链接数是有限的
+   * @AfterEach　注解会在每一个　@Test注解的测试方法执行后执行
+   * */
   @AfterEach
   private async afterEach() {
     await this.topo.dut1.cli.end();

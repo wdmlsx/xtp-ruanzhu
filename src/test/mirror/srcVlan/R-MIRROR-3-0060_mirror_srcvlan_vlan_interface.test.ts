@@ -27,9 +27,9 @@ class TestMirrorSrcVlan {
   private readonly topo: SingleDevice;
 
   /*
-   * @Before注解会在所有@Test注解的测试方法前运行，
-   * 只运行一次
-   * 用于初始化一些数据
+   * 从拓扑中获取设备并进行链接
+   * 每个测试例被执行前都将执行该方法，链接设备
+   * @BeforeEach　注解会在每一个　@Test注解的测试方法执行前运行
    * */
   @BeforeEach
   private async beforeEach() {
@@ -38,6 +38,11 @@ class TestMirrorSrcVlan {
     await this.topo.dut.connect();
   }
 
+  /*
+   * 每个测试用例跑完都断开设备连接
+   * 因为每台设备允许的telnet最多链接数是有限的
+   * @AfterEach　注解会在每一个　@Test注解的测试方法执行后执行
+   * */
   @AfterEach
   private async afterEach() {
     await this.topo.dut.end();
