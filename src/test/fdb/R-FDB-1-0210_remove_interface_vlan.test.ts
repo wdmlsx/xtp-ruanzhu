@@ -46,6 +46,11 @@ class TestInterface {
     await this.topo.dut.connect();
   }
 
+  /*
+   * 每个测试用例跑完都断开设备连接
+   * 因为每台设备允许的telnet最多链接数是有限的
+   * @AfterEach　注解会在每一个　@Test注解的测试方法执行后执行
+   * */
   @AfterEach
   private async afterEach() {
     await this.topo.dut.end();
