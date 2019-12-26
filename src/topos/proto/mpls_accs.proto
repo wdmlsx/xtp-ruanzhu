@@ -2,15 +2,9 @@ syntax = "proto3";
 package api;
 
 option java_package = "org.onosproject.protocol.sptn.proto.api";
-// 34所与比特统型版本 v1.0 2019/11/13
 
 import "mpls_service.proto";
 
-//1、网络侧属性定义
-// 双方统一pw封装行为，固定为raw模式：
-// 1)Eth接入：上下行均保持；
-// 2)VLAN接入：上行剥ptag，下行加VLAN tag；
-// 3)Filter-class: 上下行均保持。
 
 message def_accs_service
 {
@@ -29,7 +23,7 @@ message def_accs_qos
     int32 pir      = 4; //PIR, <1-10000000>
     int32 pbs      = 5; //PBS, <1-4000000>
     int32 pri      = 6; //优先级，cos
-    int32 stats_en = 7; //stats enable 
+    int32 stats_en = 7; //stats enable
 }
 
 // 2、配置节点保护组
@@ -42,19 +36,19 @@ message tbl_accs_protect_group
     repeated int32 backup_port_list = 5; // 备用节点端口：备设备的AC端口
 }
 
-//3、配置uni 
+//3、配置uni
 message tbl_accs_uni
 {
 	int32 id                   = 1; //范围[1, 1000]
 	int32 port                 = 2;
 	int32 vlan                 = 3;
-	int32 role                 = 4; //root、leaf	
+	int32 role                 = 4; //root、leaf
 	def_accs_service serv_attr = 5;	//网络侧属性
 	def_accs_qos qos           = 6; //qos
 	uint32 node_ip             = 7; // AC所在节点IP
 }
 
-//4、配置uniFlow 
+//4、配置uniFlow
 message tbl_accs_uni_flow
 {
 	int32 id                   = 1; //范围[1, 1000]
@@ -67,7 +61,6 @@ message tbl_accs_uni_flow
 
 
 
-//=========================34所独自维护===========================
 message response_accs_protect_group
 {
 	int32 return_code    = 1;

@@ -1,6 +1,5 @@
 syntax = "proto3";
 package api;
-// 34所与比特统型版本 v1.0 2019/11/13
 option java_package = "org.onosproject.protocol.sptn.proto.api";
 
 import "mpls_service.proto";
@@ -12,15 +11,14 @@ message tbl_service_policer
 
     //policer parameter
     int32 cir           = 2; //CIR, <1-10000000>
-    
+
     //option on create
     int32 cbs           = 3; //CBS, <1-4000000>
     int32 pir           = 4; //PIR, <1-10000000>
     int32 pbs           = 5; //PBS, <1-4000000>
     //int32 drop_color  = 6; //1, drop red; 2, drop yellow; 比特不支持，可以去掉
-    int32 stats_en      = 6; //stats enable 
-    
-	// *** 以下ctrl_local_id, cos为比特增加, 比特使用, 34所不用，控制器配置的时候在AC和policer都配，34所用AC，比特用policer的
+    int32 stats_en      = 6; //stats enable
+
     int32 ctrl_local_id = 7;
 	int32 cos           = 8;
 }
@@ -34,7 +32,6 @@ message getall_service_policer
 }
 
 
-//34所增加，用于管道Qos，比特可以不支持
 message def_service_queue
 {
     int32 rate = 1; //rate, <1-10000000>
@@ -48,19 +45,19 @@ message def_service_queue
 message tbl_service_queue
 {
     //Mandotory on create
-    string name = 1; 
-    
-    //option parameter 
+    string name = 1;
+
+    //option parameter
     int32 class = 2; //Class, <1-8>; user should use <0-7> from web browser
     int32 rate = 3; //Shape rate, <1-10000000>
-    def_service_queue queue0 = 4; //queue 0 para 
-    def_service_queue queue1 = 5; //queue 1 para 
-    def_service_queue queue2 = 6; //queue 2 para 
-    def_service_queue queue3 = 7; //queue 3 para 
-    def_service_queue queue4 = 8; //queue 4 para 
-    def_service_queue queue5 = 9; //queue 5 para 
-    def_service_queue queue6 = 10; //queue 6 para 
-    def_service_queue queue7 = 11; //queue 7 para 
+    def_service_queue queue0 = 4; //queue 0 para
+    def_service_queue queue1 = 5; //queue 1 para
+    def_service_queue queue2 = 6; //queue 2 para
+    def_service_queue queue3 = 7; //queue 3 para
+    def_service_queue queue4 = 8; //queue 4 para
+    def_service_queue queue5 = 9; //queue 5 para
+    def_service_queue queue6 = 10; //queue 6 para
+    def_service_queue queue7 = 11; //queue 7 para
 }
 
 message notify_service_queue //34所需要
@@ -82,7 +79,6 @@ message getall_service_queue
     repeated tbl_service_queue data = 3;
 }
 
-//=========================34所独自维护===========================
 message notify_service_policer //34所需要
 {
     string name = 1;

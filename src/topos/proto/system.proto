@@ -23,8 +23,6 @@ message tbl_system
 {
 	string node_position     = 1;    //设备所在的位置，如A节点的主设备AM，B分支6节点的备设备B6S，B分支1的C分支1节点主设备C1-1M...
 	uint32 clear_all_service = 2;    //清除设备所有业务,仅比特控制器操作比特设备使用
-	
-	uint32 node_id           = 3;   //OAM Node ID
 }
 
 message response_system

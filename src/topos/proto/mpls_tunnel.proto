@@ -1,7 +1,6 @@
 syntax = "proto3";
 package api;
 option java_package = "org.onosproject.protocol.sptn.proto.api";
-// 34所与比特统型版本 v1.0 2019/11/13
 
 import "mpls_flow_qos.proto";
 import "mpls_service.proto";
@@ -18,23 +17,23 @@ message tbl_lsppe
 {
     //Mandotory on create
     tbl_lsppe_key key        = 1; //控制器下发的时候用全数字(奇数)的字符串，比特的ID直接从里面取就可以了
-    
+
     uint32 inlabel           = 2;
     uint32 outlabel          = 3;
     uint32 nexthop_ip        = 4;
     uint32 port              = 5; //用于比特模型
     string dest_mac          = 6; //example a0:00:00:ab:00:3a，用于比特模型
-    
+
     //Read write
     uint32 bhh_auto          = 7; //用于34所设备
     tbl_oam oam              = 8; //统型
-    
+
     uint32 stats_en          = 9;
     string service_queue     = 10; //service-queue name, must create service queue first
-	 
+
     //Read only
-    def_status status        = 11; //table status 
-    def_bhh_event bhh_status = 12; //TPOAM status 
+    def_status status        = 11; //table status
+    def_bhh_event bhh_status = 12; //TPOAM status
     string oif               = 13; //out interface
     int32 ctrl_local_id      = 14; //比特增加，仅比特使用
 }
@@ -46,15 +45,15 @@ message notify_lsppe
     tbl_lsppe_key key              = 1;  // lsp key
     def_status status              = 2;  // 用于回显。34所使用，比特可以不用
     def_bhh_event bhh_event        = 3;  // lsp/pw alarm event
-    
+
     uint32 local_loss_ratio        = 4;  //近端丢包率, 单位: 0.0001%
     uint32 remote_loss_ratio       = 5;  //远端丢包率, 单位: 0.0001%
     uint64 rx                      = 6;  //接收字节, 单位: 字节
     uint64 tx                      = 7;  //发送字节, 单位: 字节
     uint64 delay                   = 8;  //时延PTN dm by dmm&dmr, 单位: ns
-    
+
     string deviceid                = 9; //device ID e.g. "device:10.10.10.59"
-    
+
     uint32 meg_id                  = 10; //34所使用标签作为OAM标识，比特需要使用megid
     thr_exceed lm_event            = 11; //丢包超阈值告警
     uint32 lm_threshold            = 12; //丢包率门限
@@ -65,7 +64,7 @@ message notify_lsppe
     uint64 remote_loss_pkts        = 16; //远端丢包数
     uint64 rx_pkts                 = 17; //接收报文数
     uint64 tx_pkts                 = 18; //发送报文数
-    
+
     // 34所控制器不需要设备报带宽、时间戳. 若后端是比特, 性能由网管通过SNMP接口获取
     //uint64 tx_bandwidth          = 19; //发送带宽(仅比特填充)
     //uint64 rx_bandwidth          = 20; //接收带宽(仅比特填充)
@@ -102,7 +101,7 @@ message tbl_lspp
     uint32 port_west       = 10; //用于比特模型
     string dest_mac_west   = 11; //example a0:00:00:ab:00:3a，用于比特模型
     tbl_oam oam            = 12; //mip enable and megid config
-    
+
     //Read only
     def_status status_east = 13;
     def_status status_west = 14;
@@ -119,7 +118,7 @@ message notify_lspp
     uint64 rx_bytes_west    = 6;  //接收字节, 单位: 字节
     uint64 tx_bytes_west    = 7;  //发送字节, 单位: 字节
     uint64 rx_pkts_west     = 8;  //接收报文数
-    uint64 tx_pkts_west     = 9;  //发送报文数	
+    uint64 tx_pkts_west     = 9;  //发送报文数
     string deviceid         = 10; // device ID “devi
 }
 
@@ -141,17 +140,17 @@ message def_protect_lsp
 
 message tbl_tunnel_key
 {
-    string name = 1;   //Tunnel group name 
+    string name = 1;   //Tunnel group name
 }
 
 message tbl_tunnel_smart_group
 {
 	//Mandotory on create
     tbl_tunnel_key key                   = 1;
-    
+
     string work_lsp                      = 2;	// 工作LSP, 支持set
     repeated def_protect_lsp protect_lsp = 3;   // 1:N, N取1-3条, 支持set
-    
+
     def_aps_revert_mode revert_mod       = 4;	//保护组返回模式
     int32 wtr                            = 5;	//等待恢复时间0~600秒, 0表示立即返回
     string lsp2switch                    = 6;	//强制倒换到某条LSP, 支持set

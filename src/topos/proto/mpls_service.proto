@@ -2,10 +2,9 @@ syntax = "proto3";
 package api;
 
 option java_package = "org.onosproject.protocol.sptn.proto.api";
-// 34所与比特统型版本 v1.0 2019/11/13
 import "oam.proto";
 
-//def_status的判断标准：AC和PW的配置正确，且端口处于UP状态，用于回显。34所使用，比特可以不用
+//def_status的判断标准：AC和PW的配置正确，且端口处于UP状态，用于回显。34所使用，
 enum def_status
 {
     MPLS_DOWN  = 0;
@@ -19,8 +18,8 @@ enum def_bhh_event
     BHH_LOC  = 1;  //LOC告警
     BHH_OK   = 2;  //告警恢复
     BHH_RDI  = 3;  //RDI告警
-    BHH_AIS  = 4;  //AIS告警 
-    
+    BHH_AIS  = 4;  //AIS告警
+
     //TP-OAM没有MAC状态改变、远端MEP MAC不匹配告警
     BHH_MISMERGE              = 5;         //MEG不匹配
     BHH_UNEXPECTED_LEVEL      = 6;         //等级不匹配
@@ -58,17 +57,17 @@ message tbl_filter_class
 {
 	//Mandotory on create
     string name           = 1;  // def_ac的ac_id, 范围[1~1000]
-	
+
     //MAC
     string src_mac        = 2; //example a0:00:00:ab:00:3a
     string dst_mac        = 3; //example a0:00:00:ab:00:3b
     int32 vlan            = 4; //1-4094
     int32 cos             = 5; //1-8, user should use 0-7 at web or CLI
-	
+
     int32 ether_type      = 6; // *** 以太网链路封装的协议类型, IPv4,ARP, RARP, VLAN...
-	
+
     //IP
-    int32 src_ip          = 7; 
+    int32 src_ip          = 7;
     int32 src_ip_mask_len = 8;  //1-32
     int32 dst_ip          = 9;
     int32 dst_ip_mask_len = 10; //1-32
@@ -96,14 +95,14 @@ message tbl_pwpe // 固定为RAW
 {
     //Mandotory on create
     tbl_pwpe_key key              = 1;
-    	
+
     uint32 inlabel                = 2;
     uint32 outlabel               = 3;
     enable_sel stats_en           = 4;  // pw收发统计开关
     tbl_oam oam                   = 5; //留个开关
-    
+
     string tunnel_smart_group_key = 6; //隧道保护组的关联
-    
+
     // *** 双方把AC和pw上告警繁殖的开关去掉，全部默认打开
     int32 ctrl_local_id           = 7; //比特使用
 }
@@ -114,7 +113,7 @@ message notify_pwpe
     tbl_pwpe_key key               = 1;     // pw key(必填)
     def_status status              = 2;     // 34所用于回显,比特可以不用
     def_bhh_event bhh_event        = 3;     // pw告警
-    
+
     uint32 local_loss_ratio        = 4;     //近端丢包率, 单位: 0.0001%
     uint32 remote_loss_ratio       = 5;     //远端丢包率, 单位: 0.0001%
     uint64 rx                      = 6;     //接收字节, 单位: 字节
@@ -127,12 +126,12 @@ message notify_pwpe
     uint32 lm_threshold            = 12;    //丢包率门限
     thr_exceed dm_event            = 13;    //时延告警，0-无，1-时延超越门限
     uint32 dm_threshold            = 14;    //时延门限
-    
+
     uint64 local_loss_pkts         = 15;    //近端丢包数
     uint64 remote_loss_pkts        = 16;    //远端丢包数
     uint64 rx_pkts                 = 17;    //接收报文数
     uint64 tx_pkts                 = 18;    //发送报文数
-    
+
     // 34所控制器不需要设备报带宽、时间戳. 若后端是比特, 性能由网管通过SNMP接口获取
     //uint64 tx_bandwidth         = 19;       //发送带宽
     //uint64 rx_bandwidth         = 20;       //接收带宽
@@ -158,7 +157,7 @@ message tbl_pwpe_smart_group
     tbl_pwpe_group_key key         = 1;
     string work_pw                 = 2;	    //工作pw key
     string protect_pw              = 3;     //保护pw key
-	
+
     def_aps_revert_mode revert_mod = 4;	    //返回模式
     int32                      wtr = 5;	    ////等待恢复时间0~600秒, 0表示立即返回
     int32             force_switch = 6;	    //支持set操作
@@ -182,28 +181,28 @@ message getall_pwpe_smart_group
 
 //AC:
 // 控制器必须保证对应的tbl_filter_class、tbl_service_policer在AC之前创建
-// 
+//
 message def_ac
 {
     string interface      = 1; //34所：eth-x-x, 比特：字符串中的整数（整数字符串）
     //Note, user must set interface.
-    //if filter-class is set, AC is filter-class mode(业务感知). 
+    //if filter-class is set, AC is filter-class mode(业务感知).
     //if vlan is not 0, AC will be vlan mode
-    //if vlan is 0 and class is null, AC is ethernet mode. 
-    
+    //if vlan is 0 and class is null, AC is ethernet mode.
+
     uint32 vlan           = 2;
     string filter_class   = 3; //used for service detect
-    
+
     def_ac_type type      = 4; //Used for vpls etree mode
     uint32 cos            = 5; //used for qos priority, 1-8
-    
+
     uint64 rx_octets      = 6; //RX statistics, Byte
     uint64 rx_pkts        = 7; //RX statistics, packet
     uint64 tx_octets      = 8; //TX statistics, Byte
     uint64 tx_pkts        = 9; //TX statistics, packet
 
-    string service_policy = 10; //service policy name, must create service policy first 
-	
+    string service_policy = 10; //service policy name, must create service policy first
+
     uint32 ac_id          = 11; //比特增加，仅比特使用
 }
 
@@ -211,11 +210,11 @@ message def_peer //用户VPWS或者VPLS网络侧状态回显
 {
     string pw              = 1; //PW name used by peer
     string tunnel_group    = 2; //Tunnel name used by pw
-    string lsp             = 3; //LSP name used by tunnel 
-    uint32 inlabel         = 4; 
-    uint32 outlabel        = 5; 
+    string lsp             = 3; //LSP name used by tunnel
+    uint32 inlabel         = 4;
+    uint32 outlabel        = 5;
     string pw_interface    = 6;
-    def_status peer_status = 7; 	 
+    def_status peer_status = 7;
 }
 
 // TBL_VPWS
@@ -232,9 +231,9 @@ message tbl_vpws
 	// *** 34所支持VPWS绑定多个AC bundle，约定此处固定绑定一个AC
 	// acs支持set操作
     repeated def_ac acs = 2; //permit set multiple acs on the same ac interface
-    
+
     string working_pwpe = 3;  //工作PW
-    
+
     //Read only
     def_status status   = 4; //def_status的判断标准：AC和PW的配置正确，且端口处于UP状态，用于回显。34所使用，比特可以不用
     def_peer peer       = 5;
@@ -276,8 +275,8 @@ message tbl_vpls
     repeated def_ac acs         = 2; // 支持set操作
     repeated tbl_tppeer tppeers = 3;
     enable_sel igmp_en          = 4; //34所需要
-    int32 igmp_version          = 5; //1,v1; 2,v2; 3,v3; default version is v2 
-    
+    int32 igmp_version          = 5; //1,v1; 2,v2; 3,v3; default version is v2
+
     //Read only
     repeated def_peer peers = 6;
 }
