@@ -9,15 +9,28 @@ import {
   TestOnly
 } from "../../../decorators";
 
+/*
+ * @Describe注解用于描述该测试用例所测试的功能
+ * 该文字描述会在脚本执行完毕后在终端输出，也会记录到测试报告中，方便用户查看
+ * */
 @Describe(
   "R-MIRROR-3-0060 test User can monitor any VLANs to specified session, the VLAN range should be 1 to 4094. If the VLAN interface isn’t created in system, user can not configure this VLAN as mirror source. If the VLAN or VLAN interface is deleted after configured mirror source VLAN, the configuration of mirror source VLAN should be deleted."
 )
 class TestMirrorSrcVlan {
   private vlanId: number;
 
+  /*
+   * @InjectTopo 注解用于给该测试类注入拓扑
+   * 初始化该类时注入虚拟拓扑
+   * */
   @InjectTopo
   private readonly topo: SingleDevice;
 
+  /*
+   * @Before注解会在所有@Test注解的测试方法前运行，
+   * 只运行一次
+   * 用于初始化一些数据
+   * */
   @BeforeEach
   private async beforeEach() {
     jest.setTimeout(30000);

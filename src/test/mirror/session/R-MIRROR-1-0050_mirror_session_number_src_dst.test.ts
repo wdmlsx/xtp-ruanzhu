@@ -8,8 +8,11 @@ import {
   Test,
   TestOnly
 } from "../../../decorators";
-import has = Reflect.has;
 
+/*
+ * @Describe注解用于描述该测试用例所测试的功能
+ * 该文字描述会在脚本执行完毕后在终端输出，也会记录到测试报告中，方便用户查看
+ * */
 @Describe(
   "R-MIRROR-1-0050 test session can only have one mirror dest and a set of mirror src"
 )
@@ -20,6 +23,11 @@ class TestMirrorSession {
   private destPort1: string;
   private destPort2: string;
 
+  /*
+   * @Before注解会在所有@Test注解的测试方法前运行，
+   * 只运行一次
+   * 用于初始化一些数据
+   * */
   @BeforeAll
   private init() {
     this.sourPort1 = this.topo.port[0];
@@ -28,6 +36,10 @@ class TestMirrorSession {
     this.destPort2 = this.topo.port[3];
   }
 
+  /*
+   * @InjectTopo 注解用于给该测试类注入拓扑
+   * 初始化该类时注入虚拟拓扑
+   * */
   @InjectTopo
   private readonly topo: SingleDevice;
 

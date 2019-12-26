@@ -123,6 +123,7 @@ class TestFDB {
     `;
   }
 
+  // 清除配置
   private async clearStatic() {
     await this.topo.dut.exec`
       > clear mac address-table static

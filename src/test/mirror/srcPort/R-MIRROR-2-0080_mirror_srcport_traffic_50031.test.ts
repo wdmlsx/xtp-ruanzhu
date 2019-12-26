@@ -9,11 +9,13 @@ import {
   TestOnly
 } from "../../../decorators";
 import { Ether, IP, Packet } from "@xtp/packet-craft";
-import { Dot1Q } from "@xtp/packet-craft/dist/layers/l2/dot1q";
-import { sleep } from "../../../utils";
 import { DoubleDevice } from "../../../topos/double-device";
 import { Dut } from "@xtp/telnet";
 
+/*
+ * @Describe注解用于描述该测试用例所测试的功能
+ * 该文字描述会在脚本执行完毕后在终端输出，也会记录到测试报告中，方便用户查看
+ * */
 @Describe(
   "R-MIRROR-2-0080 test If the egress traffic of port is monitored, all traffic which going out of the port and follow the rule of [R-MIRROR-5-0031] should be monitored to specified session."
 )
@@ -23,6 +25,11 @@ class TestMirrorSrcPort {
   private p5: string;
   private p6: string;
 
+  /*
+   * @Before注解会在所有@Test注解的测试方法前运行，
+   * 只运行一次
+   * 用于初始化一些数据
+   * */
   @BeforeAll
   private async init() {
     this.p3 = this.topo.dut1.port[2];
@@ -31,6 +38,10 @@ class TestMirrorSrcPort {
     this.p6 = this.topo.dut1.port[1];
   }
 
+  /*
+   * @InjectTopo 注解用于给该测试类注入拓扑
+   * 初始化该类时注入虚拟拓扑
+   * */
   @InjectTopo
   private readonly topo: DoubleDevice;
 

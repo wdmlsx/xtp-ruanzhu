@@ -9,17 +9,30 @@ import {
   TestOnly
 } from "../../../decorators";
 
+/*
+ * @Describe注解用于描述该测试用例所测试的功能
+ * 该文字描述会在脚本执行完毕后在终端输出，也会记录到测试报告中，方便用户查看
+ * */
 @Describe(
   "R-MIRROR-2-0050 test Source port can’t be mirror’s destination port."
 )
 class TestMirrorSrcPort {
   private sourPort: string;
 
+  /*
+   * @Before注解会在所有@Test注解的测试方法前运行，
+   * 只运行一次
+   * 用于初始化一些数据
+   * */
   @BeforeAll
   private init() {
     this.sourPort = this.topo.port[0];
   }
 
+  /*
+   * @InjectTopo 注解用于给该测试类注入拓扑
+   * 初始化该类时注入虚拟拓扑
+   * */
   @InjectTopo
   private readonly topo: SingleDevice;
 

@@ -9,8 +9,11 @@ import {
   TestOnly
 } from "../../../decorators";
 import { Ether, Packet, IP } from "@xtp/packet-craft";
-import { sleep } from "../../../utils";
 
+/*
+ * @Describe注解用于描述该测试用例所测试的功能
+ * 该文字描述会在脚本执行完毕后在终端输出，也会记录到测试报告中，方便用户查看
+ * */
 @Describe(
   "R-MIRROR-2-0070 test If the ingress traffic of port is monitored, all traffic which is coming from that port and follow the rule of [R-MIRROR-5-0021] should be monitored to specified session."
 )
@@ -18,12 +21,21 @@ class TestMirrorSrcPort {
   private srcPort: string;
   private dstPort: string;
 
+  /*
+   * @Before注解会在所有@Test注解的测试方法前运行，
+   * 只运行一次
+   * 用于初始化一些数据
+   * */
   @BeforeAll
   private init() {
     this.srcPort = this.topo.port[0];
     this.dstPort = this.topo.port[1];
   }
 
+  /*
+   * @InjectTopo 注解用于给该测试类注入拓扑
+   * 初始化该类时注入虚拟拓扑
+   * */
   @InjectTopo
   private readonly topo: SingleDevice;
 

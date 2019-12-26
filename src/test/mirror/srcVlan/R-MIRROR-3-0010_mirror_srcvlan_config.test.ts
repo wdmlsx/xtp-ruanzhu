@@ -8,17 +8,29 @@ import {
   Test,
   TestOnly
 } from "../../../decorators";
-import { awaitExpression, numberLiteralTypeAnnotation } from "@babel/types";
 
+/*
+ * @Describe注解用于描述该测试用例所测试的功能
+ * 该文字描述会在脚本执行完毕后在终端输出，也会记录到测试报告中，方便用户查看
+ * */
 @Describe(
   "R-MIRROR-3-0010 test User can monitor traffic based on VLAN (and the VLAN which have been monitored is called as mirror source VLAN or source VLAN)"
 )
 class TestMirrorSrcVlan {
   private vlanId: number;
 
+  /*
+   * @InjectTopo 注解用于给该测试类注入拓扑
+   * 初始化该类时注入虚拟拓扑
+   * */
   @InjectTopo
   private readonly topo: SingleDevice;
 
+  /*
+   * @Before注解会在所有@Test注解的测试方法前运行，
+   * 只运行一次
+   * 用于初始化一些数据
+   * */
   @BeforeEach
   private async beforeEach() {
     jest.setTimeout(30000);
