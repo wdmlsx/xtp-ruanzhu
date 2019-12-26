@@ -49,6 +49,11 @@ class TestFDB {
 
   private vlanId: number = 1226;
 
+  /*
+   * @BeforeAll注解会在所有@Test注解的测试方法前运行，
+   * 只运行一次
+   * 用于初始化一些数据
+   * */
   @BeforeAll
   private initPortName() {
     //port 9  to port 0

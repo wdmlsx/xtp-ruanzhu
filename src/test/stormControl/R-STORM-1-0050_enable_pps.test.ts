@@ -25,6 +25,11 @@ class TestStromControl {
 
   private pps: string = ModeType[ModeType.pps];
 
+  /*
+   * @BeforeAll注解会在所有@Test注解的测试方法前运行，
+   * 只运行一次
+   * 用于初始化一些数据
+   * */
   @BeforeAll
   private init() {
     this.portName = this.topo.port[0];

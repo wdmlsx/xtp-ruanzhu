@@ -37,6 +37,11 @@ class TestFDB {
   private macEntry6: MacEntry;
   private macEntry7: MacEntry;
 
+  /*
+   * @BeforeAll注解会在所有@Test注解的测试方法前运行，
+   * 只运行一次
+   * 用于初始化一些数据
+   * */
   @BeforeAll
   private async init() {
     this.portName1 = this.topo.port[0];

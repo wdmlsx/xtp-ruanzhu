@@ -22,7 +22,7 @@ class TestFDB {
   private mac: string = "0000.0000.0001";
 
   /*
-   * @Before注解会在所有@Test注解的测试方法前运行，
+   * @BeforeAll注解会在所有@Test注解的测试方法前运行，
    * 只运行一次
    * 用于初始化一些数据
    * */

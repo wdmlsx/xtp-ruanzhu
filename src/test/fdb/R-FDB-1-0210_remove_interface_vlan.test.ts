@@ -21,6 +21,11 @@ class TestInterface {
 
   private vlanId: string = "100";
 
+  /*
+   * @BeforeAll注解会在所有@Test注解的测试方法前运行，
+   * 只运行一次
+   * 用于初始化一些数据
+   * */
   @BeforeAll
   private initPortName() {
     //port9 to port0
