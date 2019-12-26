@@ -12,6 +12,10 @@ import { StormEntry } from "./StormEntry";
 import { ControlType } from "./ControlType";
 import { ModeType } from "./ModeType";
 
+/*
+ * @Describe注解用于描述该测试用例所测试的功能
+ * 该文字描述会在脚本执行完毕后在终端输出，也会记录到测试报告中，方便用户查看
+ * */
 @Describe(
   "R-STORM-1-0030 test storm control can be set on aggregation member interface ,and cannot be set on aggregation interface"
 )

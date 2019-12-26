@@ -11,6 +11,10 @@ import {
 } from "../../decorators";
 import { MacEntry } from "./MacEntry";
 
+/*
+ * @Describe注解用于描述该测试用例所测试的功能
+ * 该文字描述会在脚本执行完毕后在终端输出，也会记录到测试报告中，方便用户查看
+ * */
 @Describe(
   "R-RDB-1-0140 test clear all static mac entries of system which should not clear mulicast address entries"
 )
