@@ -21,6 +21,11 @@ class TestFDB {
   @InjectTopo
   private readonly topo: SingleDevice;
 
+  /*
+   * 从拓扑中获取设备并进行链接
+   * 每个测试例被执行前都将执行该方法，链接设备
+   * @BeforeEach　注解会在每一个　@Test注解的测试方法执行前运行
+   * */
   @BeforeEach
   private async beforeEach() {
     jest.setTimeout(30000);
@@ -33,6 +38,11 @@ class TestFDB {
     await this.topo.dut.end();
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test default ageing-time of system is 300")
   private async testDefaultVlaue() {
     const output = await this.topo.dut.exec`

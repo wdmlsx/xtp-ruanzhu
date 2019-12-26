@@ -32,6 +32,11 @@ class TestStromControl {
   @InjectTopo
   private readonly topo: SingleDevice;
 
+  /*
+   * 从拓扑中获取设备并进行链接
+   * 每个测试例被执行前都将执行该方法，链接设备
+   * @BeforeEach　注解会在每一个　@Test注解的测试方法执行前运行
+   * */
   @BeforeEach
   private async beforeEach() {
     jest.setTimeout(30000);
