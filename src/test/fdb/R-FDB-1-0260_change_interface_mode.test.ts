@@ -39,6 +39,11 @@ class TestFDB {
     await this.topo.dut.end();
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test change mode to trunk will remove static mac entry")
   private async testChangeToTrunk() {
     try {
@@ -77,6 +82,11 @@ class TestFDB {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test change mode to access will remove static mac entry")
   private async testChangeToAccess() {
     try {

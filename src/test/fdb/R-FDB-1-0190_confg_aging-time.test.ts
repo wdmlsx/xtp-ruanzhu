@@ -44,6 +44,11 @@ class TestFDB {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test ageing-time should not less than 10")
   private async testLess10() {
     let haseError = false;
@@ -61,6 +66,11 @@ class TestFDB {
     expect(haseError).toBeTruthy();
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test ageing-time should not greater than 1 000 000")
   private async testGreater1000000() {
     let haseError = false;
@@ -78,6 +88,11 @@ class TestFDB {
     expect(haseError).toBeTruthy();
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test show the ageing-time of the system")
   private async testConfig() {
     try {

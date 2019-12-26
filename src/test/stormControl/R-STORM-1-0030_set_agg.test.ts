@@ -44,6 +44,11 @@ class TestStromControl {
     await this.topo.dut.end();
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test set storm control on agge member interface")
   private async testConfigOnMember() {
     try {
@@ -83,6 +88,11 @@ class TestStromControl {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test set storm control on agg interface should be failure")
   private async testConfigOnAgg() {
     let aggId = await this.changeToAgg(this.portName, this.aggId);

@@ -47,6 +47,11 @@ class TestStromControl {
     await this.topo.dut.end();
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test wrong leve value [1.111] should be failure")
   private async testWronLeve1() {
     let type: string = ControlType[ControlType.broadcast];
@@ -67,6 +72,11 @@ class TestStromControl {
     expect(hasError).toBeTruthy();
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test wrong level vlaue [101] should be failure")
   private async testWrongLevel2() {
     let type: string = ControlType[ControlType.broadcast];
@@ -88,6 +98,11 @@ class TestStromControl {
     expect(haseError).toBeTruthy();
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("strom control can be set on broadcast")
   private async testBroadcast() {
     try {
@@ -125,6 +140,11 @@ class TestStromControl {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("storm control can be set on multicast")
   private async testMulticast() {
     try {
@@ -162,6 +182,11 @@ class TestStromControl {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("storm control can be set on unicast")
   private async testUnicast() {
     try {

@@ -44,6 +44,11 @@ class TestStromControl {
     await this.topo.dut.end();
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test storm control can be enabled with pps mode")
   private async testEnablePPS() {
     try {
@@ -81,6 +86,11 @@ class TestStromControl {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test the vlaue must be in mulitples of 1000 by [100]")
   private async testWrongFirst() {
     let hasError = false;
@@ -100,6 +110,11 @@ class TestStromControl {
     expect(hasError).toBeTruthy();
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test(
     "test the vlaue must be in 0-100 000 000 by wrong vlaue [10 000 000 000]"
   )
@@ -121,6 +136,11 @@ class TestStromControl {
     expect(hasError).toBeTruthy();
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("strom control can be set on broadcast")
   private async testBroadcast() {
     try {
@@ -158,6 +178,11 @@ class TestStromControl {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("storm control can be set on multicast")
   private async testMulticast() {
     try {
@@ -195,6 +220,11 @@ class TestStromControl {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("storm control can be set on unicast")
   private async testUnicast() {
     try {
