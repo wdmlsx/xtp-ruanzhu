@@ -1,0 +1,342 @@
+syntax = "proto3";
+package api;
+
+option java_package = "org.onosproject.protocol.sptn.proto.api";
+// 34所与比特统型版本 v1.0 2019/11/13
+import "oam.proto";
+
+//def_status的判断标准：AC和PW的配置正确，且端口处于UP状态，用于回显。34所使用，比特可以不用
+enum def_status
+{
+    MPLS_DOWN  = 0;
+    MPLS_UP    = 1;
+}
+
+// lsp/pw alarm event
+enum def_bhh_event
+{
+    BHH_INIT = 0;
+    BHH_LOC  = 1;  //LOC告警
+    BHH_OK   = 2;  //告警恢复
+    BHH_RDI  = 3;  //RDI告警
+    BHH_AIS  = 4;  //AIS告警 
+    
+    //TP-OAM没有MAC状态改变、远端MEP MAC不匹配告警
+    BHH_MISMERGE              = 5;         //MEG不匹配
+    BHH_UNEXPECTED_LEVEL      = 6;         //等级不匹配
+    BHH_UNEXPECTED_MEP        = 7;         //MEP不匹配
+    BHH_UNEXPECTED_PERIOD     = 8;         //周期不匹配
+}
+
+enum def_ac_type
+{
+    ROOT  = 0;
+    LEAF  = 1;
+}
+
+
+//APS Group Status Defination
+enum def_smart_group_status
+{
+    APS_INVALID_STATUS            = 0;
+    APS_GROUP_STATUS_DOWN         = 1; // 保护组不可用(保护组中成员均不可用)
+    APS_GROUP_STATUS_UP           = 2; // 保护组可用
+    APS_STATUS_SWITCH_TO_WORK     = 3; //保护组切换到工作模式
+    APS_STATUS_SWITCH_TO_PROTECT  = 4; //保护组切换到保护模式
+}
+
+enum def_aps_revert_mode  // 保护组返回模式
+{
+    APS_MODE_INVALID   = 0;
+    APS_MODE_REVERT    = 1;  // 返回
+    APS_MODE_NOREVERT  = 2;  // 非返回
+}
+
+
+//流匹配定义 *** (tbl_filter_class只有在流匹配时采用，无需filter_class type)
+message tbl_filter_class
+{
+	//Mandotory on create
+    string name           = 1;  // def_ac的ac_id, 范围[1~1000]
+	
+    //MAC
+    string src_mac        = 2; //example a0:00:00:ab:00:3a
+    string dst_mac        = 3; //example a0:00:00:ab:00:3b
+    int32 vlan            = 4; //1-4094
+    int32 cos             = 5; //1-8, user should use 0-7 at web or CLI
+	
+    int32 ether_type      = 6; // *** 以太网链路封装的协议类型, IPv4,ARP, RARP, VLAN...
+	
+    //IP
+    int32 src_ip          = 7; 
+    int32 src_ip_mask_len = 8;  //1-32
+    int32 dst_ip          = 9;
+    int32 dst_ip_mask_len = 10; //1-32
+    int32 dscp            = 11; //1-64
+    int32 protocol        = 12; //UDP, 6 TCP 21
+    int32 src_port        = 13; //L4 SRC PORT
+    int32 dst_port        = 14; //L4 DST PORT
+}
+
+
+message getall_filter_class
+{
+    int32 return_code              = 1;
+    string return_string           = 2;
+    repeated tbl_filter_class data = 3;
+}
+
+// PW
+message tbl_pwpe_key
+{
+    string name = 1;
+}
+
+message tbl_pwpe // 固定为RAW
+{
+    //Mandotory on create
+    tbl_pwpe_key key              = 1;
+    	
+    uint32 inlabel                = 2;
+    uint32 outlabel               = 3;
+    enable_sel stats_en           = 4;  // pw收发统计开关
+    tbl_oam oam                   = 5; //留个开关
+    
+    string tunnel_smart_group_key = 6; //隧道保护组的关联
+    
+    // *** 双方把AC和pw上告警繁殖的开关去掉，全部默认打开
+    int32 ctrl_local_id           = 7; //比特使用
+}
+
+
+message notify_pwpe
+{
+    tbl_pwpe_key key               = 1;     // pw key(必填)
+    def_status status              = 2;     // 34所用于回显,比特可以不用
+    def_bhh_event bhh_event        = 3;     // pw告警
+    
+    uint32 local_loss_ratio        = 4;     //近端丢包率, 单位: 0.0001%
+    uint32 remote_loss_ratio       = 5;     //远端丢包率, 单位: 0.0001%
+    uint64 rx                      = 6;     //接收字节, 单位: 字节
+    uint64 tx                      = 7;     //发送字节, 单位: 字节
+    uint64 delay                   = 8;     //时延PTN dm by dmm&dmr, 单位: ns
+    string deviceid                = 9;     //device ID e.g. "device:10.10.10.59"
+	// 34所使用标签作为OAM标识，比特需要使用meg_id
+    uint32 meg_id                  = 10;    //meg_id （比特使用meg id作为OAM标识）
+    thr_exceed lm_event            = 11;    //used for pwpe lm alarm, 0-无，1-丢包超越门限
+    uint32 lm_threshold            = 12;    //丢包率门限
+    thr_exceed dm_event            = 13;    //时延告警，0-无，1-时延超越门限
+    uint32 dm_threshold            = 14;    //时延门限
+    
+    uint64 local_loss_pkts         = 15;    //近端丢包数
+    uint64 remote_loss_pkts        = 16;    //远端丢包数
+    uint64 rx_pkts                 = 17;    //接收报文数
+    uint64 tx_pkts                 = 18;    //发送报文数
+    
+    // 34所控制器不需要设备报带宽、时间戳. 若后端是比特, 性能由网管通过SNMP接口获取
+    //uint64 tx_bandwidth         = 19;       //发送带宽
+    //uint64 rx_bandwidth         = 20;       //接收带宽
+    //uint64 performance_time     = 21;       //时间戳（os tick, ms为单位）
+}
+
+
+message getall_pwpe
+{
+    int32 return_code      = 1;
+    string return_string   = 2;
+    repeated tbl_pwpe data = 3;
+}
+
+// PW保护组
+message tbl_pwpe_group_key
+{
+    string name = 1;
+}
+
+message tbl_pwpe_smart_group
+{
+    tbl_pwpe_group_key key         = 1;
+    string work_pw                 = 2;	    //工作pw key
+    string protect_pw              = 3;     //保护pw key
+	
+    def_aps_revert_mode revert_mod = 4;	    //返回模式
+    int32                      wtr = 5;	    ////等待恢复时间0~600秒, 0表示立即返回
+    int32             force_switch = 6;	    //支持set操作
+    int32            ctrl_local_id = 7;     //比特使用
+}
+
+message notify_pwpe_smart_group
+{
+    tbl_pwpe_group_key key        = 1;
+    def_smart_group_status status = 2;
+    string deviceid               = 3;
+}
+
+
+message getall_pwpe_smart_group
+{
+    int32 return_code = 1;
+    string return_string = 2;
+    repeated tbl_pwpe_smart_group data = 3;
+}
+
+//AC:
+// 控制器必须保证对应的tbl_filter_class、tbl_service_policer在AC之前创建
+// 
+message def_ac
+{
+    string interface      = 1; //34所：eth-x-x, 比特：字符串中的整数（整数字符串）
+    //Note, user must set interface.
+    //if filter-class is set, AC is filter-class mode(业务感知). 
+    //if vlan is not 0, AC will be vlan mode
+    //if vlan is 0 and class is null, AC is ethernet mode. 
+    
+    uint32 vlan           = 2;
+    string filter_class   = 3; //used for service detect
+    
+    def_ac_type type      = 4; //Used for vpls etree mode
+    uint32 cos            = 5; //used for qos priority, 1-8
+    
+    uint64 rx_octets      = 6; //RX statistics, Byte
+    uint64 rx_pkts        = 7; //RX statistics, packet
+    uint64 tx_octets      = 8; //TX statistics, Byte
+    uint64 tx_pkts        = 9; //TX statistics, packet
+
+    string service_policy = 10; //service policy name, must create service policy first 
+	
+    uint32 ac_id          = 11; //比特增加，仅比特使用
+}
+
+message def_peer //用户VPWS或者VPLS网络侧状态回显
+{
+    string pw              = 1; //PW name used by peer
+    string tunnel_group    = 2; //Tunnel name used by pw
+    string lsp             = 3; //LSP name used by tunnel 
+    uint32 inlabel         = 4; 
+    uint32 outlabel        = 5; 
+    string pw_interface    = 6;
+    def_status peer_status = 7; 	 
+}
+
+// TBL_VPWS
+message tbl_vpws_key
+{
+    string name = 1;
+}
+
+
+message tbl_vpws
+{
+    //Mandotory on create
+    tbl_vpws_key key    = 1;
+	// *** 34所支持VPWS绑定多个AC bundle，约定此处固定绑定一个AC
+	// acs支持set操作
+    repeated def_ac acs = 2; //permit set multiple acs on the same ac interface
+    
+    string working_pwpe = 3;  //工作PW
+    
+    //Read only
+    def_status status   = 4; //def_status的判断标准：AC和PW的配置正确，且端口处于UP状态，用于回显。34所使用，比特可以不用
+    def_peer peer       = 5;
+}
+
+message notify_vpws
+{
+    tbl_vpws_key key   = 1;
+    def_status status  = 2;
+    string deviceid    = 3;
+    repeated def_ac ac = 4;  // AC统计
+}
+
+message getall_vpws
+{
+    int32 return_code      = 1;
+    string return_string   = 2;
+    repeated tbl_vpws data = 3;
+}
+
+// VPLS
+message tbl_tppeer
+{
+    //Mandotory on create
+    string name         = 1;
+    enable_sel upe      = 2;  // UPE开关，默认不使能. 配置为UPE的peer，不受水平分割约束
+    string working_pwpe = 3;  // 工作PW
+}
+
+message tbl_vpls_key
+{
+    string name = 1;
+}
+
+message tbl_vpls
+{
+    //Mandotory on create
+    tbl_vpls_key key            = 1;
+    repeated def_ac acs         = 2; // 支持set操作
+    repeated tbl_tppeer tppeers = 3;
+    enable_sel igmp_en          = 4; //34所需要
+    int32 igmp_version          = 5; //1,v1; 2,v2; 3,v3; default version is v2 
+    
+    //Read only
+    repeated def_peer peers = 6;
+}
+
+message notify_vpls
+{
+    tbl_vpls_key key   = 1;
+    def_status status  = 2;
+    string deviceid    = 3;  // device ID
+    repeated def_ac ac = 4;  //AC统计
+}
+
+message getall_vpls
+{
+    int32 return_code      = 1;
+    string return_string   = 2;
+    repeated tbl_vpls data = 3;
+}
+
+//=========================34所独自维护===========================
+message notify_filter_class
+{
+    string name = 1;
+}
+
+message response_filter_class
+{
+	int32 return_code    = 1;
+	string return_string = 2;
+	tbl_filter_class data      = 3;
+}
+
+message response_pwpe
+{
+	int32 return_code    = 1;
+	string return_string = 2;
+	tbl_pwpe data      = 3;
+}
+
+message response_pwpe_smart_group
+{
+	int32 return_code    = 1;
+	string return_string = 2;
+	tbl_pwpe_smart_group data      = 3;
+}
+
+message response_vpws
+{
+	int32 return_code    = 1;
+	string return_string = 2;
+	tbl_vpws data      = 3;
+}
+
+message response_vpls
+{
+	int32 return_code    = 1;
+	string return_string = 2;
+	tbl_vpls data      = 3;
+}
+
+
+

@@ -1,0 +1,203 @@
+syntax = "proto3";
+package api; 
+
+option java_package = "org.onosproject.protocol.sptn.proto.api";
+
+message cos_phb
+{
+	uint32 cos = 1;
+	uint32 phb = 2;
+}
+
+message cos_pri_color
+{
+	uint32 cos 		= 1;
+	uint32 pri 		= 2;
+	uint32 color 	= 3;
+}
+
+message dscp_phb
+{
+	uint32 dscp = 1;
+	uint32 phb = 2;
+}
+
+message dscp_pri_color
+{
+	uint32 dscp 	= 1;
+	uint32 pri 		= 2;
+	uint32 color 	= 3;	
+}
+
+message exp_phb            
+{
+	uint32 exp = 1;
+	uint32 phb = 2;	
+}
+
+message exp_pri_color
+{
+	uint32 exp 		= 1;
+	uint32 pri 		= 2;
+	uint32 color 	= 3;	
+}
+
+message prec_phb
+{
+	uint32 prec = 1;
+	uint32 phb 	= 2;	
+}
+
+message prec_pri_color
+{
+	uint32 prec		= 1;
+	uint32 pri 		= 2;
+	uint32 color 	= 3;	
+}
+
+message phb_map
+{
+	uint32 phb 	= 1;
+	uint32 cos 	= 2;
+	uint32 dscp = 3;
+	uint32 exp 	= 4;
+}
+
+message pri_color_map
+{
+	uint32 pri 			= 1;
+	uint32 color 		= 2;
+	uint32 cos 			= 3;
+	uint32 dscp			= 4;
+	uint32 exp			= 5;	
+	uint32 threshold	= 6;
+	uint32 queue		= 7;
+}
+
+enum port_shaping
+{
+	BPS_1024k = 0;
+	BPS_128k  = 1;
+	BPS_256k  = 2;
+	BPS_32k   = 3;
+	BPS_512k  = 4;
+	BPS_64k   = 5;
+}
+
+//qos
+message tbl_qos_domain
+{
+	uint32 id 									= 1;
+	bool cfi_enable 							= 2;
+	repeated cos_phb cos2phb 					= 3;
+	repeated cos_pri_color	cos2priCol			= 4;
+	repeated dscp_phb	dscp2phb				= 5;
+	repeated dscp_pri_color dscp2priCol 		= 6;
+	repeated exp_phb 	exp2phb					= 7;
+	repeated exp_pri_color exp2priCol			= 8;
+	repeated prec_phb	prec2phb				= 9;
+	repeated prec_pri_color prec2priCol			= 10;
+	repeated phb_map	phbMap					= 11;
+	repeated pri_color_map	priColMap			= 12;
+	port_shaping granularity					= 13;
+	bool statistics_enable						= 14;
+	bool flow_first_enable						= 15;
+	repeated string applied_intfs				= 16;
+}
+
+message response_qos_domain
+{
+	int32 return_code = 1;
+	string return_string = 2;
+	tbl_qos_domain data = 3;
+}
+
+message getall_qos_domain
+{
+	int32 return_code = 1;
+	string return_string = 2;
+	repeated tbl_qos_domain data = 3;
+}
+
+message notify_qos_domain
+{
+	
+}
+
+message	tbl_qos_cmap
+{
+	string name = 1;
+	int32 type = 2;	//0:default 1:all 2:any
+	repeated string acls = 3;
+}
+
+message pmap_policer
+{
+	bool color_aware = 1;	//0-color-blind
+	uint32 cir = 2;
+	uint32 cbs = 3;
+	uint32 ebs = 4; 
+	uint32 drop_color = 5;
+	uint32 pir = 6;
+	bool statistics = 7;
+	bool use_l3_length = 8;
+}
+
+message pmap_cfg
+{
+	string cmaps = 1;
+	pmap_policer policer = 2;
+	uint32 monitor_session = 3;
+}
+
+message qos_pmap_service
+{
+	string intf_name = 1;
+	uint32 direction = 2; //0-in, 1-out
+	bool set = 3;
+}
+
+message	tbl_qos_pmap
+{
+	string name = 1;
+	repeated pmap_cfg pmap_cfgs = 2;
+	repeated qos_pmap_service service = 3;
+}
+
+message response_qos_pmap
+{
+	int32 return_code = 1;
+	string return_string = 2;
+	tbl_qos_pmap data = 3;
+}
+
+message response_qos_cmap
+{
+	int32 return_code = 1;
+	string return_string = 2;
+	tbl_qos_cmap data = 3;
+}
+
+message getall_qos_pmap
+{
+	int32 return_code = 1;
+	string return_string = 2;
+	repeated tbl_qos_pmap data = 3;
+}
+
+message getall_qos_cmap
+{
+	int32 return_code = 1;
+	string return_string = 2;
+	repeated tbl_qos_cmap data = 3;
+}
+
+message notify_qos_pmap
+{
+	
+}
+
+message notify_qos_cmap
+{
+	
+}

@@ -1,0 +1,27 @@
+syntax = "proto3";
+package api;
+
+
+//used by internal message between grpc agent and internal service process 
+//controller don't need care this message
+message header
+{
+     required uint32 service_id = 1;
+     required uint32 opcode = 2;
+     required uint32 len = 3;
+     required string id = 4;
+
+    enum opertion
+    {
+        OPER_ADD = 1;
+        OPER_DEL = 2;
+        OPER_SET = 3;
+        OPER_GET = 4;
+		OPER_CLEAR = 5;
+		OPER_NOTIFY = 6;
+    }	 
+}
+
+
+
+

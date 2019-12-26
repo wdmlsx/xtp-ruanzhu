@@ -1,0 +1,389 @@
+syntax = "proto3";
+package api; 
+option java_package = "org.onosproject.protocol.sptn.proto.api";
+// 34所与比特统型版本 v1.0 2019/11/13
+
+// FRU状态编码, 遵循VITA 46.11, IPMI规范
+enum fru_stat {
+	FRU_STAT_M0 = 0;
+	FRU_STAT_M1 = 1;
+	FRU_STAT_M4 = 4;
+	FRU_STAT_M6 = 6;
+	FRU_STAT_M7 = 7;
+};
+
+// VPX sensors
+message vpx_sensor {
+	enum sensor_type {
+		SENSOR_FRU         = 0; // current fru state (M0/M1/M4/M6/M7)
+		SENSOR_VOLT        = 1; // 电压unit: 0.1V
+		SENSOR_CURRENT     = 2; // 电流unit: mA
+		SENSOR_TEMPERATURE = 3; // 温度unit: 1 degree celsius
+		SENSOR_SELFTEST    = 4; // 自检b0: FPGA, b1: uart, b2: l2 switch, b3: temp sernor, b4: power sensor
+	}
+	sensor_type type = 1;
+	int32 value      = 2;
+}
+
+enum alarm_level {
+	AL_NORMAL         = 0;  // 正常
+	AL_DOWN_SLIGHT    = 1;  // 轻微超下限
+	AL_DOWN_SERIOUS   = 2;  // 严重超下限
+	AL_DOWN_UNRECOVER = 3;  // 不可恢复超下限
+    AL_UP_SLIGHT      = 4;  // 轻微超上限
+    AL_UP_SERIOUS     = 5;  // 严重超上限
+    AL_UP_UNRECOVER   = 6;  // 不可恢复超上限
+};
+
+
+message plug_manu_info {
+	uint32 year     = 1;      // 板卡生产年
+	uint32 month    = 2;      // 板卡生产月
+	uint32 day      = 3;      // 板卡生产日
+	uint32 snNum    = 4;      // 板卡序列号
+}
+
+message e1MacAddr {
+	uint32 r      = 1;  // 1~4: E1-1 ~ E1-4
+	string srcMac = 2;  //xx:xx:xx:xx:xx:xx 
+	string desMac = 3;
+}
+
+// control board (plug 7/8)
+message ctrl_stat {
+	uint32 bcmLink  = 1;  // L2 switch link stat, 比特可以不填
+	string macAddr  = 2;  //xx:xx:xx:xx:xx:xx
+	uint32  ipAddr  = 3;  //Little Endian (LSB first) (ip[0] <<  0) + (ip[1] <<  8) + (ip[2] << 16) + (ip[3] << 24)
+	uint32  ipMask  = 4;  //Little Endian (LSB first)
+	
+	uint32 losE1    = 5;  // bit0, set: LOS, clr: OK
+	e1MacAddr e1Mac = 6;
+}
+
+// XGE/GE board (plug 6/9): SFP+/SFP status, read only
+message sfp_stat{
+	uint32 id   = 1;  // XGE: 1~4, 5~8, GE: 9~12
+	string name = 2;  // interface name
+	uint32 stat = 3;  // bit0: onsite (0 yes 1 no), bit1: has tx err (1 yes 0 no), bit2: rx LOS (1 yes 0 no)
+	int32  temp = 4;
+	float pwrTx = 5;
+	float pwrRx = 6;
+}
+
+message copper_ge_link{
+	string name          = 1;  // GE(copper): eth-plug-1~4
+	
+	enum copper_link {
+		NOT_LINK = 0;
+		LINK     = 1;
+	};
+	
+	copper_link linkstat = 2;
+}
+
+message xgege_stat {
+	repeated sfp_stat sfp          = 2;
+	repeated copper_ge_link gelink = 3;
+}
+
+// SDH/PDH board (plug 5)
+message sdhpdh_stat {
+	uint32 losSdh            = 1;    // bit0  : SDH-1, bit1: SDH-2; set: LOS, clr: OK
+	uint32 losPdh            = 2;    // bit0  : PDH-1, bit1: PDH-2; set: LOS, clr: OK
+	uint32 losE1             = 3;    // bit0~3: E1-1~4, set: LOS, clr: OK
+	
+	enum sdh_speed {
+		SPEED_NULL   = 0;
+		SPEED_155M   = 1;         // GZE-C default config 1 (155M)
+		SPEED_622M   = 2;         // GZE-C default config 2 (622M)
+	}
+	sdh_speed sdhSpeed       = 4;
+	
+	enum e1_ces {
+		CES_NULL = 0;
+		CES_DISABLE = 1;        // disable E1 CES (E1-1/2 <-> SDH-1/2,  E1-3/4 <-> PDH-1/2)
+		CES_ENABLE  = 2;        // enable E1 CES
+	}
+	
+	e1_ces cesEn             = 5;
+	repeated e1MacAddr e1Mac = 6;
+}
+
+// OTDR board (plug 1)
+message otdr_stat {
+	string macAddr                 = 1;  //xx:xx:xx:xx:xx:xx
+	uint32 ipAddr                  = 2;  //Little Endian (LSB first)
+	uint32 ipMask                  = 3;  //Little Endian (LSB first)
+	uint32 gateWay                 = 4;  //Little Endian (LSB first)
+	uint32 curveCfg                = 5;  //b0~b3: 1~4 route curve config stat, 1: configured, 0: no
+	uint32 monSwitch               = 6;  //b0~b3: 1~4 route monitoring switch, 0: monitoring, 1: no
+	
+	message otdr_chn_stat {         // one section per fiber
+		uint32 chn           = 1;   // 1~4
+		uint32 alarmLevel    = 2;
+		uint32 alarmType     = 3;
+		float  lossVal       = 4;
+		uint32 alarmPosition = 5;
+	}
+	
+	repeated otdr_chn_stat chnStat = 7;
+}
+
+// power board (plug 15/16)
+message power_stat {
+	float volt_12v    = 1;
+	float volt_3v     = 2;
+	float volt_5v     = 3;
+	float current_12v = 4;
+	float current_3v  = 5;
+	float current_5v  = 6;
+}
+
+// fan board (plug 17/18)
+message fan_stat {
+	repeated uint32 fanSpeed = 1;
+}
+
+// sdn board (plug 11)
+message sdn_stat {
+	string macAddr = 1;  //xx:xx:xx:xx:xx:xx
+	uint32  ipAddr = 2;  //Little Endian (LSB first) (ip[0] <<  0) + (ip[1] <<  8) + (ip[2] << 16) + (ip[3] << 24)
+	uint32  ipMask = 3;  //Little Endian (LSB first)
+}
+
+
+// oneof plug type depended payload status message
+message payload_stat {
+	oneof statPayload {
+		ctrl_stat   ctrl   = 1;
+		xgege_stat  xgeGe  = 2;
+		sdhpdh_stat sdhPdh = 3;
+		otdr_stat   otdr   = 4;
+		power_stat  power  = 5;
+		fan_stat    fan    = 6;
+		sdn_stat    sdn    = 7;
+	}
+}
+
+// ================ plug snap ================
+message plug_snap
+{
+	uint32 plug                = 1;
+	
+	enum boardType {
+		BOARD_NULL    = 0;          // 空槽
+		BOARD_CTRL    = 1;          // 交换管理板
+		BOARD_OTDR    = 2;          // 光缆监测板
+		BOARD_SDHPDH  = 3;          // SDH/PDH/E1板
+		BOARD_XGEGE   = 4;          // XGE/GE接口板
+		BOARD_PWR     = 5;          // 电源板
+		BOARD_FAN     = 6;          // 风扇板
+		BOARD_LED     = 7;          // 指示灯板(34所)
+		BOARD_SDN     = 8;          // SDN板
+		BOARD_BIT_CU  = 9;          // 综合控制板(比特)
+		BOARD_ILLEGAL = 0xFF;
+	};
+	boardType type             = 2;
+	
+	enum devType {        // 仅34所使用
+		DEV_UNKNOWN   = 0;
+		JQ_BACKEND    = 1;
+		JQ_FRONTEND_1 = 2;
+		JQ_FRONTEND_4 = 3;
+	};
+	
+	devType deviceType         = 3;
+	
+	uint32 hardwareVer         = 4; // 板卡硬件版本
+	string gd32Ver             = 5; // gd32(ChMC/IPMC MCU)软件版本
+	string fpgaVer             = 6; // FPGA软件版本
+	string cpuVer              = 7; // CPU软件版本
+	
+	plug_manu_info manu_info   = 8; // 板卡生产信息、工作时间统计
+	
+	uint32 cpuUsage            = 9; // CPU利用率，单位: 1%
+	uint32 memUsage            = 10; //内存利用率，单位: 1%
+	
+	uint32 runSec              = 11; // 板卡累计运行时间(秒)
+	uint32 fruOnSec            = 12; // 板卡累计12V加电时间(秒)
+	
+	repeated vpx_sensor sensor = 13;
+	payload_stat payLoadStat   = 14;
+}
+
+
+message tbl_snap
+{
+	uint32 plug = 1;
+}
+
+message response_snap
+{
+	int32 return_code    = 1;
+	string return_string = 2;
+	plug_snap snap       = 3;
+}
+
+message getall_snap
+{
+	int32 return_code        = 1;
+	string return_string     = 2;
+	repeated plug_snap snaps = 3;
+}
+
+
+
+
+//  ================ cabincfg ================
+message ctrl_cfg {
+	e1MacAddr e1Mac = 1;
+}
+
+message sdhpdh_cfg {
+	enum sdh_speed {
+		SPEED_NULL = 0;
+		SPEED_155M = 1;
+		SPEED_622M = 2;
+	};
+	sdh_speed speed          = 1;
+	
+	enum e1_ces {
+		CES_NULL    = 0;
+		CES_DISABLE = 1;
+		CES_ENABLE  = 2;
+	};
+	e1_ces    ces            = 2;
+	
+	repeated e1MacAddr e1Mac = 3;
+}
+
+message otdr_cfg {
+	// ipAddr, ipMask, gateWay should set together
+	uint32 ipAddr     = 1;  //Little Endian (LSB first)
+	uint32 ipMask     = 2;  //Little Endian (LSB first)
+	uint32 gateWay    = 3;  //Little Endian (LSB first)
+	uint32 testSwitch = 4;  //bit7~4: 1111b, bit0~3 for chn1~4, 0 for enable, 1 for disable
+}
+
+message sdn_cfg {
+	uint32 ipAddr     = 1;  //Little Endian (LSB first)
+	uint32 ipMask     = 2;  //Little Endian (LSB first)
+	uint32 gateWay    = 3;  //Little Endian (LSB first)
+}
+
+
+// oneof plug type depended payload status message
+message plug_config {
+	enum fru_ctrl {
+		FRU_ON          = 0;   // 12V加电
+		FRU_OFF         = 1;   // 12V下电
+		FRU_GD32_REBOOT = 2;   // IPMC/ChMC MCU reboot
+	};
+	fru_ctrl fruCtrl      = 1; // FRU控制
+    
+	oneof plugCfg {
+	    ctrl_cfg   ctrl   = 2;
+		sdhpdh_cfg sdhPdh = 3;
+		otdr_cfg   otdr   = 4;
+		sdn_cfg    sdn    = 5;
+	}
+}
+
+
+message tbl_cabincfg
+{
+	uint32 plug        = 1;
+	plug_config config = 2;
+}
+
+message response_cabincfg
+{
+	int32 return_code    = 1;
+	string return_string = 2;
+	
+}
+
+//  ================ Notify ================
+message cabin_noti_hotswap { // FRU状态迁移事件
+	uint32 plug  = 1;
+	fru_stat pre = 2;  // FRU之前状态
+	fru_stat cur = 3;  // FRU当前状态
+}
+
+message cabin_noti_volt { // 电压事件告警
+	uint32 plug       = 1;
+	uint32 eventType  = 2; // 事件码：0：事件发生；1：事件消除
+	alarm_level level = 3;
+	uint32 voltVal    = 4; // 0.1v单位
+}
+
+message cabin_noti_current { // 电流事件告警
+	uint32 plug       = 1;
+	uint32 eventType  = 2; // 事件码：0：事件发生；1：事件消除
+	alarm_level level = 3;
+	uint32 currentVal = 4; // mA单位
+}
+
+message cabin_noti_temperature { // 温度事件告警
+	uint32 plug       = 1;  // 槽位
+	uint32 eventType  = 2; // 事件码：0：事件发生；1：事件消除
+	alarm_level level = 3;
+	int32  tempVal    = 4;  //1度单位
+}
+
+message cabin_noti_sfp { // SFP事件告警
+	uint32 plug       = 1;  // 槽位
+	
+	uint32 id         = 2;  // XGE: 1~4, 5~8, GE: 9~12
+	string name       = 3;  // interface name
+    alarm_level level = 4;
+	int32  temp       = 5;
+	float pwrTx       = 6;
+	float pwrRx       = 7;
+}
+
+message cabin_noti_interface {  // 物理接口（GE LINK, SFP LOS/不在位等）alarm
+	uint32 plug = 1;
+	string name = 2;
+	uint32 stat = 3;
+}
+
+
+message cabin_noti_otdr {
+	uint32 plug                   = 1;
+	uint32 fiber                  = 2;
+	
+	message otdr_sec_alarm {       // OTDR per section alarm
+		uint32 section       = 1;
+		uint32 alarmLevel    = 2;
+		uint32 alarmType     = 3;
+		float  lossVal       = 4;
+		uint32 alarmPosition = 5;
+	}
+	
+	repeated otdr_sec_alarm alarm = 3;
+
+}
+
+// oneof notify message
+message notify_cabin {
+	string deviceid                                    = 1; // deviceid, like “device:10.10.10.59”
+	
+	oneof cabin_notify_union {
+		cabin_noti_hotswap                hotSwap      = 2;
+		cabin_noti_volt                   volt         = 3;
+		cabin_noti_current                current      = 4;
+		cabin_noti_temperature            termperature = 5;
+		cabin_noti_interface              interface    = 6;
+		cabin_noti_otdr                   otdr         = 7;
+		cabin_noti_sfp                    sfp          = 8;
+	}
+}
+
+
+//=========================34所独自维护===========================
+
+message notify_snap
+{
+	string deviceid = 1; 
+}

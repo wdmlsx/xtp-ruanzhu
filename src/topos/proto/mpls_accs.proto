@@ -1,0 +1,127 @@
+syntax = "proto3";
+package api;
+
+option java_package = "org.onosproject.protocol.sptn.proto.api";
+// 34所与比特统型版本 v1.0 2019/11/13
+
+import "mpls_service.proto";
+
+//1、网络侧属性定义
+// 双方统一pw封装行为，固定为raw模式：
+// 1)Eth接入：上下行均保持；
+// 2)VLAN接入：上行剥ptag，下行加VLAN tag；
+// 3)Filter-class: 上下行均保持。
+
+message def_accs_service
+{
+    int32 serv_id                       = 1;        // 全局业务ID, 范围[1501, 3000]
+    string serv_name                    = 2;        // 业务名称，可以不填
+    def_aps_revert_mode tsg_revert_mode = 3;        // 隧道保护组返回模式
+    int32 tsg_wtr                       = 4;        // 隧道保护组WTR, 0~600 second
+    def_aps_revert_mode psg_revert_mode = 5;        // 伪线保护组返回模式
+    int32 psg_wtr                       = 6;        // 伪线保护组WTR, 0~600 second
+}
+
+message def_accs_qos
+{
+    int32 cir      = 2; //CIR, <1-10000000>
+    int32 cbs      = 3; //CBS, <1-4000000>
+    int32 pir      = 4; //PIR, <1-10000000>
+    int32 pbs      = 5; //PBS, <1-4000000>
+    int32 pri      = 6; //优先级，cos
+    int32 stats_en = 7; //stats enable 
+}
+
+// 2、配置节点保护组
+message tbl_accs_protect_group
+{
+    int32  group_id                 = 1; // 节点保护组ID (1~128)
+    uint32 major_ip                 = 2; // 主节点IP
+    repeated int32 major_port_list  = 3; // 主用节点端口：主设备的AC端口
+    uint32 backup_ip                = 4; // 备节点IP
+    repeated int32 backup_port_list = 5; // 备用节点端口：备设备的AC端口
+}
+
+//3、配置uni 
+message tbl_accs_uni
+{
+	int32 id                   = 1; //范围[1, 1000]
+	int32 port                 = 2;
+	int32 vlan                 = 3;
+	int32 role                 = 4; //root、leaf	
+	def_accs_service serv_attr = 5;	//网络侧属性
+	def_accs_qos qos           = 6; //qos
+	uint32 node_ip             = 7; // AC所在节点IP
+}
+
+//4、配置uniFlow 
+message tbl_accs_uni_flow
+{
+	int32 id                   = 1; //范围[1, 1000]
+	int32 role                 = 2; //root、leaf
+	tbl_filter_class  filter   = 3; //业务匹配条件
+	def_accs_qos qos           = 4; //qos
+	def_accs_service serv_attr = 5;	//网络侧属性
+	uint32 node_ip             = 6; // AC所在节点IP
+}
+
+
+
+//=========================34所独自维护===========================
+message response_accs_protect_group
+{
+	int32 return_code    = 1;
+	string return_string = 2;
+	tbl_accs_protect_group data      = 3;
+}
+
+message getall_accs_protect_group
+{
+	int32 return_code = 1;
+	string return_string = 2;
+	repeated tbl_accs_protect_group data = 3;
+}
+
+message notify_accs_protect_group
+{
+	string deviceid = 1;
+}
+
+message response_accs_uni
+{
+	int32 return_code    = 1;
+	string return_string = 2;
+	tbl_accs_uni data      = 3;
+}
+
+message getall_accs_uni
+{
+	int32 return_code = 1;
+	string return_string = 2;
+	repeated tbl_accs_uni data = 3;
+}
+
+message notify_accs_uni
+{
+	string deviceid = 1;
+}
+
+message response_accs_uni_flow
+{
+	int32 return_code    = 1;
+	string return_string = 2;
+	tbl_accs_uni_flow data      = 3;
+}
+
+message getall_accs_uni_flow
+{
+	int32 return_code = 1;
+	string return_string = 2;
+	repeated tbl_accs_uni_flow data = 3;
+}
+
+message notify_accs_uni_flow
+{
+	string deviceid = 1;
+}
+

@@ -1,0 +1,42 @@
+syntax = "proto3";
+package api; 
+// 34所与比特统型版本 v1.0 2019/11/13
+option java_package = "org.onosproject.protocol.sptn.proto.api";
+
+import "oam.proto";
+enum def_ptp_type
+{
+    PTP_INVALID_TYPE = 0;
+    PTP_OC  = 1;
+    PTP_BC  = 2;
+	PTP_E2ETC  = 3;
+	PTP_P2PTC  = 4;
+}
+//全部为set操作
+message tbl_ptp
+{
+    def_ptp_type type = 1; //ptp device type   
+    enable_sel enable = 2; //global enable or disable
+    int32 priority1 = 3; //config priority1 attribute <1-255>
+}
+
+message response_ptp
+{
+    int32 return_code = 1;
+    string return_string = 2;
+    tbl_ptp data = 3;
+}
+
+message notify_ptp
+{
+	
+}
+
+message getall_ptp
+{
+
+}
+
+
+
+

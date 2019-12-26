@@ -1,0 +1,17 @@
+syntax = "proto3";
+package api; 
+option java_package = "org.onosproject.protocol.sptn.proto.api";
+// 比特网管不从前端设备获取拓扑,此文件内容比特可暂不关注
+
+
+
+message notify_topo
+{
+    
+}
+
+message getall_topo
+{
+
+}
+

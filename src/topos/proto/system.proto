@@ -1,0 +1,105 @@
+syntax = "proto3";
+package api; 
+// 34所与比特统型版本 v1.0 2019/11/13
+option java_package = "org.onosproject.protocol.sptn.proto.api";
+
+//normal response for add/del/set response
+message response_status
+{
+	int32 return_code    = 1;   // -1：失败 0: 成功
+	string return_string = 2;   // 返回码描述
+}
+
+message def_range
+{
+	//not support range now, current only support getall
+	//there are no parser in ptn device now, so user can set (0,0) or else
+	int32 start = 1; 
+	int32 end = 2;
+}
+
+
+message tbl_system
+{
+	string node_position     = 1;    //设备所在的位置，如A节点的主设备AM，B分支6节点的备设备B6S，B分支1的C分支1节点主设备C1-1M...
+	uint32 clear_all_service = 2;    //清除设备所有业务,仅比特控制器操作比特设备使用
+	
+	uint32 node_id           = 3;   //OAM Node ID
+}
+
+message response_system
+{
+	int32 return_code    = 1;
+	string return_string = 2;
+	tbl_system data      = 3;
+}
+
+
+
+message notify_system
+{
+	string node_position = 1;	//read only
+	string device_id     = 2;	//read only
+	uint32 powerOn       = 3;  //read only, 设备上电后alarm给控制器, alarm时填1, notify时填0
+}
+
+//全部为set操作
+message tbl_controller
+{
+    uint32 ip = 1;       //controller IP address   
+    uint32 port = 2;     //l4port, default is 50051
+    string deviceid = 3; //deviceid, like device:10.10.10.59
+}
+
+message response_controller
+{
+    int32 return_code = 1;
+    string return_string = 2;
+    tbl_controller data = 3;
+}
+
+
+message tbl_alarm
+{
+} 
+message notify_alarm
+{
+}
+message response_alarm
+{
+}
+message getall_alarm
+{
+}
+message tbl_notify
+{
+} 
+message notify_notify
+{
+}
+message response_notify
+{
+}
+message getall_notify
+{
+}
+
+//=========================34所独自维护===========================
+message getall_system
+{
+	int32 return_code = 1;
+	string return_string = 2;
+	repeated tbl_system data = 3;
+}
+
+message notify_controller
+{
+	
+}
+
+message getall_controller
+{
+
+}
+
+

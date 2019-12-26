@@ -1,0 +1,35 @@
+syntax = "proto3";
+package api; 
+option java_package = "org.onosproject.protocol.sptn.proto.api";
+
+// ================ plug snap ================
+message lldp_link_node
+{
+	string src      = 1;
+	string dest     = 2;
+}
+
+message tbl_lldp
+{
+	uint32 start_idx = 1;
+}
+
+message response_lldp
+{
+    int32 return_code    = 1;
+	string return_string = 2;
+	lldp_link_node node  = 3;
+}
+
+message notify_lldp
+{
+
+}
+
+message getall_lldp
+{
+	int32 return_code        = 1;
+	string return_string     = 2;
+	repeated lldp_link_node nodes = 3;
+}
+

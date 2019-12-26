@@ -1,0 +1,131 @@
+syntax = "proto3";
+package api;
+// 34所与比特统型版本 v1.0 2019/11/13
+option java_package = "org.onosproject.protocol.sptn.proto.api";
+
+
+message tbl_intf_key
+{
+    string name = 1;
+}
+
+enum if_type
+{
+    INVALID_IF_TYPE = 0;
+    IF_ETHERNET 	= 1;
+    IF_AGGREGATE 	= 2;
+    IF_VLAN 		= 3;
+    IF_LOOPBACK 	= 4;
+}
+
+enum if_status  // 端口状态
+{
+    INVALID_IF_STATUS = 0;
+    IF_DOWN 		= 1;
+    IF_UP 			= 2;
+    IF_ADMIN_DOWN 	= 3; //管理down，比特可以不用
+    IF_LOS          = 4; //仅针对SDH和PDH的光口
+}
+
+enum switchmode
+{
+    INVALID_SWITCH_MODE = 0;
+    ACCESS = 1;
+    TRUNK  = 2;
+    NO_SWITCHPORT = 3; //L3 Port
+}
+
+message ip_address
+{
+    uint32 address 		= 1;
+    uint32 mask 		= 2;
+    bool secondary		= 3;
+}
+
+
+message switchport_param
+{
+    //access or trunk
+    switchmode switchmode	=1; 
+    uint32 access_vlan		=2; //0为无效值
+    uint32 native_vlan		=3; //0为无效值
+
+    //trunk allowed vlan 
+    repeated uint32 allowed_vlan	=4;  //0为无效值
+    repeated uint32 denied_vlan		=5; //0为无效值
+}
+
+message tbl_intf
+{
+    tbl_intf_key key 				= 1;	
+    uint32 switchport				= 2;   //支持set
+    switchport_param switchport_param	= 3; // 支持set, 在 switchport = ACCESS/TRUNK 时有效
+    ip_address ip_address 		= 4; //支持set，在 switchport = NO_SWITCHPORT 时有效
+
+    //read only
+    intf_statistics intfStatistics  	= 5;
+    if_type type 						= 6;
+    if_status status					= 7;
+    string mac_address                 = 8;
+ 
+    //unset 
+    uint32 clear_ip                    = 9; //支持set，0无效，1为clear
+    string name                        = 10; //用于显示端口名字
+    uint32 bandwidth                   = 11;     //协商后的实际带宽	
+}
+
+message intf_statistics
+{
+	uint64 rx_packets           = 1;        //接收包数
+	uint64 tx_packets           = 2;        //发送包数
+	uint64 rx_bytes             = 3;        //接收字节数
+	uint64 tx_bytes             = 4;        //发送字节数
+	uint64 rx_errors            = 5;        //接收错误包数
+	uint64 rx_drop              = 6;        //接收丢弃数
+	uint64 rx_multicast         = 7;	    //接收多播数
+	uint64 octets_rcv_rate      = 8;        //接收速率（字节）
+	uint64 pkts_rcv_rate        = 9;        //接收报文速率
+	uint64 octets_send_rate     = 10;       //发送速率
+	uint64 pkts_send_rate       = 11;       //发送报文速率
+	
+	uint64 rx_ucast             = 12;       //接收单播数
+	uint64 tx_ucast             = 13;       //发送单播数
+	uint64 tx_multicast         = 14;       //接收多播数
+	uint64 tx_errors            = 15;       //发送错误包数
+	
+	// 34所控制器不需要设备报带宽、时间戳. 若后端是比特, 性能由网管通过SNMP接口获取
+	//uint64 tx_bandwidth         = 16;       //发送带宽(仅比特填充)
+	//uint64 rx_bandwidth         = 17;       //接收带宽(仅比特填充)
+    //uint64 performance_time     = 18;       //时间戳（os tick, ms为单位）
+}
+
+
+message getall_intf
+{
+    int32 return_code = 1;
+    string return_string = 2;
+    repeated tbl_intf data = 3;
+}
+
+message intf_notify_data
+{
+    string name = 1;          // interface name
+    if_status status = 2; 
+    uint32 bandwidth = 3;     //协商后的实际带宽
+    intf_statistics statistics = 4;
+}
+
+message notify_intf
+{
+    repeated intf_notify_data data = 1;
+    string description = 2; //description string 
+    string deviceid = 3; //deviceid, like "device:10.10.10.59"
+}
+
+//=========================34所独自维护===========================
+message response_intf
+{
+	int32 return_code    = 1;
+	string return_string = 2;
+	tbl_intf data      = 3;
+}

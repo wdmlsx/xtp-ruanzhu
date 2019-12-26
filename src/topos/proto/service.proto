@@ -1,0 +1,160 @@
+syntax = "proto3";
+
+option java_package = "org.onosproject.protocol.sptn.proto.api";
+
+package api;
+
+// 34 v1.0 2019/11/13
+
+import "link_detect.proto";
+import "system.proto";
+import "intf.proto";
+import "cabin.proto";
+import "mpls_accs.proto";
+import "oam.proto";
+import "mpls_service.proto";
+import "mpls_tunnel.proto";
+import "mpls_flow_qos.proto";
+import "topo.proto";
+import "ptp.proto";
+import "lldp.proto";
+
+service alarm{ //% sid: 0, socket: '/tmp/.nsm_grpc_noti_msg', type: 'notify'
+    rpc intf_state(notify_intf) returns(response_status); //% rid: 0
+    rpc lsppe_state(notify_lsppe) returns(response_status); //% rid: 1
+    rpc pwpe_state(notify_pwpe) returns(response_status); //% rid: 2
+    rpc tsg_state(notify_tunnel_smart_group) returns(response_status); //% rid: 3
+    rpc psg_state(notify_pwpe_smart_group) returns(response_status); //% rid: 4
+    rpc accfm_state(notify_accfm) returns(response_status); //% rid: 5
+    rpc cabin(notify_cabin) returns(response_status); //% rid: 6
+    rpc topo(notify_topo) returns(response_status); //% rid: 7
+    rpc system(notify_system) returns(response_status); //% rid: 8
+}
+
+service notify{ //% sid: 1, socket: '/tmp/.nsm_grpc_noti_msg', type: 'notify'
+    rpc intf(notify_intf) returns(response_status); //% rid: 0
+    rpc lsppe(notify_lsppe) returns(response_status); //% rid: 1
+    rpc lspp(notify_lspp) returns(response_status); //% rid: 2
+    rpc pwpe(notify_pwpe) returns(response_status); //% rid: 3
+    rpc vpws(notify_vpws) returns(response_status); //% rid: 4
+    rpc vpls(notify_vpls) returns(response_status); //% rid: 5
+    rpc system(notify_system) returns(response_status); //% rid: 6
+}
+
+service lsppe{ //% sid: 2, socket: '/tmp/.nsm_grpc_msg', type: 'config'
+    rpc add(tbl_lsppe) returns(response_status); //% rid: 1
+    rpc del(tbl_lsppe) returns(response_status); //% rid: 2
+    rpc getall(def_range) returns(getall_lsppe); //% rid: 5
+}
+
+
+service lspp{ //% sid: 3, socket: '/tmp/.nsm_grpc_msg', type: 'config'
+    rpc add(tbl_lspp) returns(response_status); //% rid: 1
+    rpc del(tbl_lspp) returns(response_status); //% rid: 2
+    rpc getall(def_range) returns(getall_lspp); //% rid: 5
+}
+
+service tunnel_smart_group{ //% sid: 4, socket: '/tmp/.nsm_grpc_msg', type: 'config'
+    rpc add(tbl_tunnel_smart_group) returns(response_status); //% rid: 1
+    rpc del(tbl_tunnel_smart_group) returns(response_status); //% rid: 2
+    rpc set(tbl_tunnel_smart_group) returns(response_status); //% rid: 3
+    rpc getall(def_range) returns(getall_tunnel_smart_group); //% rid: 5
+}
+
+service pwpe_smart_group{ //% sid: 5, socket: '/tmp/.nsm_grpc_msg', type: 'config'
+    rpc add(tbl_pwpe_smart_group) returns(response_status); //% rid: 1
+    rpc del(tbl_pwpe_smart_group) returns(response_status); //% rid: 2
+    rpc set(tbl_pwpe_smart_group) returns(response_status); //% rid: 3
+    rpc getall(def_range) returns(getall_pwpe_smart_group); //% rid: 5
+}
+
+service pwpe{ //% sid: 6, socket: '/tmp/.nsm_grpc_msg', type: 'config'
+    rpc add(tbl_pwpe) returns(response_status); //% rid: 1
+    rpc del(tbl_pwpe) returns(response_status); //% rid: 2
+    rpc getall(def_range) returns(getall_pwpe); //% rid: 5
+}
+
+service vpws{ //% sid: 7, socket: '/tmp/.nsm_grpc_msg', type: 'config'
+    rpc add(tbl_vpws) returns(response_status); //% rid: 1
+    rpc del(tbl_vpws) returns(response_status); //% rid: 2
+    rpc set(tbl_vpws) returns(response_status); //% rid: 3
+    rpc getall(def_range) returns(getall_vpws); //% rid: 5
+}
+
+service vpls{ //% sid: 8, socket: '/tmp/.nsm_grpc_msg', type: 'config'
+    rpc add(tbl_vpls) returns(response_status); //% rid: 1
+    rpc del(tbl_vpls) returns(response_status); //% rid: 2
+    rpc set(tbl_vpls) returns(response_status); //% rid: 3
+    rpc getall(def_range) returns(getall_vpls); //% rid: 5
+}
+
+service filter_class{ //% sid: 9, socket: '/tmp/.nsm_grpc_msg', type: 'config'
+    rpc add(tbl_filter_class) returns(response_status); //% rid: 1
+    rpc del(tbl_filter_class) returns(response_status); //% rid: 2
+    rpc getall(def_range) returns(getall_filter_class); //% rid: 5
+}
+
+
+service system{ //% sid: 10, socket: '/tmp/.nsm_grpc_msg', type: 'config'
+    rpc set(tbl_system) returns(response_status); //% rid: 3
+    rpc get(tbl_system) returns(response_system); //% rid: 4	
+}
+
+service intf{ //% sid: 11, socket: '/tmp/.nsm_grpc_msg', type: 'config'
+    rpc set(tbl_intf) returns(response_status); //% rid: 3
+    rpc getall(def_range) returns(getall_intf);//% rid: 5
+}
+
+service controller{ //% sid: 12, socket: '/tmp/.nsm_grpc_msg', type: 'config'
+    rpc set(tbl_controller) returns(response_status); //% rid: 3
+    rpc get(tbl_controller) returns(response_controller); //% rid: 4
+}
+
+service snap{ //% sid: 13, socket: '/tmp/.nsm_grpc_msg', type: 'config'
+    rpc set(tbl_cabincfg) returns(response_cabincfg); //% rid: 1
+    rpc get(tbl_snap) returns(response_snap); //% rid: 2
+    rpc getall(def_range) returns(getall_snap); //% rid: 5
+}
+
+service accfm{ //% sid: 14, socket: '/tmp/.onmd_grpc_msg', type: 'config'
+    rpc add(tbl_accfm) returns(response_status); //% rid: 1
+    rpc del(tbl_accfm) returns(response_status); //% rid: 2
+    rpc getall(def_range) returns(getall_accfm);//% rid: 5
+}
+
+service service_policer{ //% sid: 15, socket: '/tmp/.nsm_grpc_msg', type: 'config'
+    rpc add(tbl_service_policer) returns(response_status); //% rid: 1
+    rpc del(tbl_service_policer) returns(response_status); //% rid: 2
+    rpc getall(def_range) returns(getall_service_policer); //% rid: 5
+}
+
+service link_detect{ //% sid: 16, socket: '/tmp/.nsm_grpc_msg', type: 'config'
+    rpc add(tbl_link_detect) returns(link_detect_response_status); //% rid: 1
+    rpc del(tbl_link_detect) returns(link_detect_response_status); //% rid: 2
+    rpc getall(link_detect_def_range) returns(getall_link_detect); //% rid: 5
+}
+
+
+service lldp{ //% sid: 17, socket: '/tmp/.onmd_grpc_msg', type: 'config'
+    rpc getall(tbl_lldp) returns(getall_lldp); //% rid: 5
+}
+
+service ptp{ //% sid: 18, socket: '/tmp/.nsm_grpc_msg', type: 'config'
+    rpc set(tbl_ptp) returns(response_status); //% rid: 3
+    rpc get(tbl_ptp) returns(response_ptp); //% rid: 4
+}
+
+service accs_uni{ //% sid: 19, socket: '/tmp/.nsm_grpc_msg', type: 'config'
+    rpc add(tbl_accs_uni) returns(response_status); //% rid: 1
+    rpc del(tbl_accs_uni) returns(response_status); //% rid: 2
+}
+
+service accs_uni_flow{ //% sid: 20, socket: '/tmp/.nsm_grpc_msg', type: 'config'
+    rpc add(tbl_accs_uni_flow) returns(response_status); //% rid: 1
+    rpc del(tbl_accs_uni_flow) returns(response_status); //% rid: 2
+}
+
+service accs_protect_group{ //% sid: 21, socket: '/tmp/.nsm_grpc_msg', type: 'config'
+    rpc add(tbl_accs_protect_group) returns(response_status); //% rid: 1
+    rpc del(tbl_accs_protect_group) returns(response_status); //% rid: 2
+}
