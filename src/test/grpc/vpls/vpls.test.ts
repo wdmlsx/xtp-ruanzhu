@@ -25,8 +25,16 @@ import { FilterClassEntry } from "../mpls/FilterClassEntry";
 import { VplsUtil } from "./VplsUtil";
 import { DefPeer } from "../mpls/DefPeer";
 
+/*
+ * @Describe注解用于描述该测试用例所测试的功能
+ * 该文字描述会在脚本执行完毕后在终端输出，也会记录到测试报告中，方便用户查看
+ * */
 @Describe("test mpls vpls")
 export class VplsTest {
+  /*
+  * @InjectTopo 注解用于给该测试类注入拓扑
+  * 初始化该类时注入虚拟拓扑
+  * */
   @InjectTopo
   private readonly topo: DoubleDevice;
 
@@ -37,18 +45,33 @@ export class VplsTest {
   private port_ac_10: string;
   private port_ac_12: string;
 
+  /*
+   * 从拓扑中获取设备并进行链接
+   * 每个测试例被执行前都将执行该方法，链接设备
+   * @BeforeEach　注解会在每一个　@Test注解的测试方法执行前运行
+   * */
   @BeforeEach
   private async beforeEach() {
     await this.dut1.cli.connect();
     // await this.dut2.cli.connect();
   }
 
+  /*
+   * 每个测试用例跑完都断开设备连接
+   * 因为每台设备允许的telnet最多链接数是有限的
+   * @AfterEach　注解会在每一个　@Test注解的测试方法执行后执行
+   * */
   @AfterEach
   private async afterEach() {
     await this.dut1.cli.end();
     // await this.dut2.cli.end();
   }
 
+  /*
+   * @BeforeAll注解会在所有@Test注解的测试方法前运行，
+   * 只运行一次
+   * 用于初始化一些数据
+   * */
   @BeforeAll
   private async init() {
     this.dut1 = this.topo.dut1;
@@ -59,7 +82,12 @@ export class VplsTest {
     this.port_ac_12 = this.dut1.port[11];
   }
 
-  @TestOnly("test get all vpls", 300000)
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
+  @Test("test get all vpls", 300000)
   private async testGetAll() {
     const vplsEntry_01 = new VplsEntry(new CommonKey("vpls_dut_01"), 1000);
     const vplsEntry_02 = new VplsEntry(new CommonKey("vpls_dut_02"), 2000);
@@ -148,6 +176,11 @@ export class VplsTest {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test add vpls with setting a number key")
   private async testAddVplsKey() {
     const vplsEntry = new VplsEntry(new CommonKey("1234"), 1000);
@@ -176,6 +209,11 @@ export class VplsTest {
     expect(hasError).toBeFalsy();
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test add vpls with single ac")
   private async testAddVplsWithAc() {
     const vplsEntry = new VplsEntry(new CommonKey("vpls_dut"), 1000);
@@ -204,6 +242,11 @@ export class VplsTest {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test add vpls with given two more acs", 30000)
   private async testAddVplsWithAcs() {
     const vplsEntry = new VplsEntry(new CommonKey("vpls_dut"), 1000);
@@ -247,6 +290,11 @@ export class VplsTest {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test add vpls with single tppeer with single pwpe", 300000)
   private async testAddVplsWithTpPeer() {
     const vplsEntry = new VplsEntry(new CommonKey("vpls_rpc"), 1000);
@@ -293,6 +341,11 @@ export class VplsTest {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test(
     "test add vpls with three more tppeers and two of them has pwpe",
     300000
@@ -355,6 +408,11 @@ export class VplsTest {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test add vpls with single ac and single tppeer", 300000)
   private async testAddVpls() {
     const vplsEntry = new VplsEntry(new CommonKey("vpls_rpc"), 1000);
@@ -411,6 +469,11 @@ export class VplsTest {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test del vpls", 30000)
   private async testDelVpls() {
     const vplsEntry = new VplsEntry(new CommonKey("vpls_dut"), 1000);
@@ -436,6 +499,11 @@ export class VplsTest {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test set an ac in a vpls which has no ac before setting", 30000)
   private async testSetAc_add() {
     const vplsEntry = new VplsEntry(new CommonKey("vpls_dut"), 1000);
@@ -472,6 +540,11 @@ export class VplsTest {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test(
     "test set a different ac in a vpls which has an ac before setting",
     30000
@@ -518,6 +591,11 @@ export class VplsTest {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test(
     "test set a same ac interface but with different ac type vlan vlaue in a vpls which has an ac before setting",
     300000
@@ -565,6 +643,11 @@ export class VplsTest {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test(
     "test set a same ac interface but with different ac type [vlan etherType]",
     300000
@@ -611,6 +694,11 @@ export class VplsTest {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test(
     "test set a tbltppeer in a vpls which has no tbltppeer before setting",
     300000
@@ -664,6 +752,11 @@ export class VplsTest {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test(
     "test set a tbltppeer in a vpls which has a tbltppeer already before setting [different name different pwpe]",
     300000
@@ -736,6 +829,11 @@ export class VplsTest {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test(
     "test set a tbltppeer in a vpls which has a tbltppeer but has no pwpe [same name different pwpe]",
     300000

@@ -23,8 +23,16 @@ import { VpwsUtil } from "./VpwsUtil";
 import { IDut } from "../../../topos/definitions";
 import { FilterClassEntry } from "../mpls/FilterClassEntry";
 
+/*
+ * @Describe注解用于描述该测试用例所测试的功能
+ * 该文字描述会在脚本执行完毕后在终端输出，也会记录到测试报告中，方便用户查看
+ * */
 @Describe("test system")
 class SystemTest {
+  /*
+  * @InjectTopo 注解用于给该测试类注入拓扑
+  * 初始化该类时注入虚拟拓扑
+  * */
   @InjectTopo
   private readonly topo: DoubleDevice;
 
@@ -35,18 +43,33 @@ class SystemTest {
   private port_ac_10: string;
   private port_ac_12: string;
 
+  /*
+   * 从拓扑中获取设备并进行链接
+   * 每个测试例被执行前都将执行该方法，链接设备
+   * @BeforeEach　注解会在每一个　@Test注解的测试方法执行前运行
+   * */
   @BeforeEach
   private async beforeEach() {
     await this.dut1.cli.connect();
     // await this.dut2.cli.connect();
   }
 
+  /*
+   * 每个测试用例跑完都断开设备连接
+   * 因为每台设备允许的telnet最多链接数是有限的
+   * @AfterEach　注解会在每一个　@Test注解的测试方法执行后执行
+   * */
   @AfterEach
   private async afterEach() {
     await this.dut1.cli.end();
     // await this.dut2.cli.end();
   }
 
+  /*
+   * @BeforeAll注解会在所有@Test注解的测试方法前运行，
+   * 只运行一次
+   * 用于初始化一些数据
+   * */
   @BeforeAll
   private async init() {
     this.dut1 = this.topo.dut1;
@@ -57,6 +80,11 @@ class SystemTest {
     this.port_ac_12 = this.dut1.port[11];
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test add vpws with given key of all numbel", 30000)
   private async testAddVpws_number() {
     const vpwsEntry = new VpwsEntry(new CommonKey("123456"));
@@ -82,6 +110,11 @@ class SystemTest {
     expect(hasError).toBeFalsy();
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test add vpws with given key of string", 30000)
   private async testAddVpws_string() {
     const vpwsEntry = new VpwsEntry(new CommonKey("vpws_rpc"));
@@ -101,6 +134,11 @@ class SystemTest {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test add vpws with an ac ethernet type and cos field", 30000)
   private async testAddVpwsWithAcEthernet() {
     const vpws_name = "vpws_dut";
@@ -128,6 +166,11 @@ class SystemTest {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test add vpws with an ac filter-class type and cos field")
   private async testAddVpwsWithAcFilterClass() {
     const vpws_name = "vpws_dut";
@@ -164,6 +207,11 @@ class SystemTest {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test add vpws with an ac vlan type and cos field")
   private async testAddVpwsWithAcVlan() {
     const vpws_name = "vpws_dut";
@@ -193,6 +241,11 @@ class SystemTest {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test add vpws with primary pwpe", 300000)
   private async testAddVpwsWithPrimaryPwpe() {
     const vpwsEntry = new VpwsEntry(new CommonKey("vpws_rpc"));
@@ -229,6 +282,11 @@ class SystemTest {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test del vpws")
   private async testDelVpws() {
     const vpws_name = "vpws_dut";
@@ -257,6 +315,11 @@ class SystemTest {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test getall vpws", 300000)
   private async testGetAll() {
     const vpwsEntry_01 = new VpwsEntry(new CommonKey("vpws_dut_01"));
@@ -329,6 +392,11 @@ class SystemTest {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test set vpws with ac field set action")
   private async testSetVpws() {
     const vpwsEntry = new VpwsEntry(new CommonKey("vpws_dut"));
@@ -360,6 +428,11 @@ class SystemTest {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test set vpws primary pwpe set action", 300000)
   private async testSetVpwsPrimaryPwpe() {
     const vpwsEntry = new VpwsEntry(new CommonKey("vpws_dut"));
@@ -411,6 +484,11 @@ class SystemTest {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test set vpws primary pwpe update action", 30000)
   private async testDetVPwsPrimaryPwpe02() {
     const vpws_name = "vpws_dut";

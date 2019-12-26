@@ -15,9 +15,16 @@ import { ipToNumber, numberToIp } from "../../../utils";
 import { LsppEntry } from "../mpls/LsppEntry";
 import { CommonKey } from "../mpls/CommonKey";
 
-// @ts-ignore
+/*
+ * @Describe注解用于描述该测试用例所测试的功能
+ * 该文字描述会在脚本执行完毕后在终端输出，也会记录到测试报告中，方便用户查看
+ * */
 @Describe("test lspp")
 class SystemTest {
+  /*
+   * @InjectTopo 注解用于给该测试类注入拓扑
+   * 初始化该类时注入虚拟拓扑
+   * */
   @InjectTopo
   private readonly topo: DoubleDevice;
 
@@ -57,18 +64,33 @@ class SystemTest {
   private ip_dut2_17_num: number;
   private ip_dut2_19_num: number;
 
+  /*
+   * 从拓扑中获取设备并进行链接
+   * 每个测试例被执行前都将执行该方法，链接设备
+   * @BeforeEach　注解会在每一个　@Test注解的测试方法执行前运行
+   * */
   @BeforeEach
   private async beforeEach() {
     await this.dut1.connect();
     await this.dut2.connect();
   }
 
+  /*
+   * 每个测试用例跑完都断开设备连接
+   * 因为每台设备允许的telnet最多链接数是有限的
+   * @AfterEach　注解会在每一个　@Test注解的测试方法执行后执行
+   * */
   @AfterEach
   private async afterEach() {
     await this.dut1.end();
     await this.dut2.end();
   }
 
+  /*
+   * @BeforeAll注解会在所有@Test注解的测试方法前运行，
+   * 只运行一次
+   * 用于初始化一些数据
+   * */
   @BeforeAll
   private async init() {
     this.dut1 = this.topo.dut1.cli;
@@ -98,6 +120,11 @@ class SystemTest {
     this.ip_dut2_19_num = await ipToNumber(this.ip_dut2_19);
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test add lspp")
   private async testAddLspp() {
     const key = new CommonKey("lspp_dut1_17");
@@ -130,6 +157,11 @@ class SystemTest {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test delete lspp")
   private async testDelLspp() {
     const key = new CommonKey("lspp_dut1_17");
@@ -162,6 +194,11 @@ class SystemTest {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test get all lspp ")
   private async testGetAllLspp() {
     const key1 = new CommonKey("lspp_dut1_17");
