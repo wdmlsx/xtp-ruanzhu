@@ -61,6 +61,11 @@ class TestMirrorSession {
     await this.topo.dut.end();
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test config port")
   private async testPort() {
     try {
@@ -80,6 +85,11 @@ class TestMirrorSession {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test config vlan")
   private async testVlan() {
     let vlanId = await this.addVlanInterface(100);
@@ -100,6 +110,11 @@ class TestMirrorSession {
     }
   }
 
+  /*
+   * 该测试用例的测试脚本
+   * @Test注解用于描述该测试用例所包含的一个测试点
+   * 这里的描述文字会随着测试用例跑完后在终端输出，也会记录在测试报告中
+   * */
   @Test("test config agg")
   private async testAgg() {
     try {
