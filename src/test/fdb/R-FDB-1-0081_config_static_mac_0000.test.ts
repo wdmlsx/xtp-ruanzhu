@@ -26,6 +26,10 @@ class TestFDB {
   @InjectTopo
   private readonly topo: SingleDevice;
 
+  /*
+   * @InjectTopo 注解用于给该测试类注入拓扑
+   * 初始化该类时注入虚拟拓扑
+   * */
   @BeforeEach
   private async beforeEach() {
     jest.setTimeout(30000);
